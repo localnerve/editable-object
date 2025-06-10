@@ -95,7 +95,7 @@ class EditableObject extends HTMLElement {
    * @returns {HTMLElement} The item li
    */
   #_getLi (element) {
-    while (element.tagName !== 'LI') element = element.parentNode; // eslint-disable-line no-param-reassign
+    while (element.tagName !== 'LI') element = element.parentNode;
     return element;
   }
 
@@ -137,7 +137,7 @@ class EditableObject extends HTMLElement {
     const li = this.#_getLi(e.target);
     const inp = li.querySelector('.property-wrapper > input');
 
-    inp.setAttribute('readonly', 'false');
+    inp.readOnly = false;
     inp._value = inp.value;
 
     const blurHandler = this.#_propertyEditFinish.bind(this);
@@ -177,7 +177,7 @@ class EditableObject extends HTMLElement {
       const newValue = inp.value;
 
       this._editing = false;
-      inp.setAttribute('readonly', true);
+      inp.readOnly = true;
 
       this.#editListeners.forEach(editListener => {
         editListener.host.removeEventListener(editListener.type, editListener.listener);
@@ -504,6 +504,8 @@ class EditableObject extends HTMLElement {
     this.#_handleLiListeners(lis);
     this.#_handleItemListeners(items, buttons);
     this.#_updateToolbars();
+
+    lis[0].querySelector('input').click();
 
     this.#object = obj;
   }
