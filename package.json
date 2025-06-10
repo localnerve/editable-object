@@ -1,13 +1,13 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
   "type": "module",
   "scripts": {
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
-    "build": "pushd src && node build.js && webpack-cli --config webpack.prod.config.js && popd",
+    "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
     "lint": "eslint .",
     "prepublishOnly": "npm run build",
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js"
