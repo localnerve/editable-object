@@ -39,8 +39,10 @@ li {
   line-height: 2.5;
   list-style: none;
   cursor: default;
+}
 
-  @media (min-width: 360px) {
+@media (min-width: 360px) {
+  li {
     padding: 0 0.5rem;
   }
 }
@@ -55,7 +57,7 @@ li, div > div {
   justify-content: space-between;
 }
 
-.editable-object:not(.defocused) li:hover {
+.editable-object:not(.defocused, .touch) li:hover {
   background: var(--eo-item-hover-color);
 }
 
