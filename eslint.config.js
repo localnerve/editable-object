@@ -6,7 +6,8 @@ export default [{
   ignores: [
     'node_modules/**',
     'dist/**',
-    'tmp/**'
+    'tmp/**',
+    'src/tmp/**'
   ]
 }, {
   name: 'src-node',
