@@ -4,8 +4,8 @@
   --eo-border-radius: 4px;
   --eo-border-focused-color: #444;
   --eo-border-defocused-color: #aaa;
-  --eo-item-selected-color: #f8f8f8;
-  --eo-item-hover-color: #eee;
+  --eo-item-selected-color: #eee;
+  --eo-item-hover-color: #ddd;
   --eo-item-input-border-color: #bbb;
   --eo-icon-color: #444;
 }
@@ -18,8 +18,12 @@
   background: var(--eo-bg-color);
   border: 1px solid var(--eo-border-focused-color);
   border-radius: var(--eo-border-radius);
-  padding: 12px;
+  padding: 1rem;
   min-width: var(--eo-min-width);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .editable-object.defocused {
@@ -32,9 +36,13 @@ ul {
 }
 
 li {
-  height: 36px;
-  padding: 0 8px;
+  line-height: 2.5;
+  list-style: none;
   cursor: default;
+
+  @media (min-width: 360px) {
+    padding: 0 0.5rem;
+  }
 }
 
 .editable-object:not(.defocused) li.selected {
@@ -53,14 +61,17 @@ li, div > div {
 
 .property-wrapper {
   display: flex;
-  padding-right: 8px;
-  padding-left: 2px;
   align-items: baseline;
+}
+
+.property-wrapper label {
+  padding-right: 1rem;
 }
 
 .toolbar {
   display: flex;
-  gap: 6px;
+  gap: 1rem;
+  padding-left: 1rem;
 }
 
 li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
@@ -106,8 +117,7 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
   padding: 6px 8px;
   border-radius: 4px;
   border: 1px solid var(--eo-item-input-border-color);
-  font-size: 14px;
-  font-family: inherit;
+  min-width: 18em;
 }
 
 .editable-object.defocused .add-new-object-property-input {
