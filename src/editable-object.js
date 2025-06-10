@@ -108,6 +108,10 @@ class EditableObject extends HTMLElement {
     this.#_cleanSelection();
     const li = this.#_getLi(e.target);
     li.classList.toggle('selected', true);
+    // set tabindex on child buttons
+    [...li.querySelectorAll('button')].forEach(button => {
+      button.tabIndex = 0;
+    })
   }
 
   /**
@@ -123,6 +127,14 @@ class EditableObject extends HTMLElement {
       composed: true,
       detail: data
     });
+  }
+
+  #_propertyInputKeySelect (e) {
+    if (e.target.nodeName === 'INPUT') {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.target.click();
+      }
+    }
   }
 
   /**
@@ -329,8 +341,15 @@ class EditableObject extends HTMLElement {
 
     const doubleTapEditHandler = this.#_createDoubleTapHandler();
     const editHandler = this.#_propertyEditStart.bind(this);
+    const keypressHandler = this.#_propertyInputKeySelect.bind(this);
 
     items.forEach(element => {
+      element.addEventListener('keypress', keypressHandler, false);
+      this.#objectListeners.push({
+        host: element,
+        type: 'keypress',
+        listener: keypressHandler
+      })
       element.addEventListener('dblclick', editHandler, false);
       this.#objectListeners.push({
         host: element,
@@ -409,6 +428,10 @@ class EditableObject extends HTMLElement {
   #_cleanSelection() {
     [...this.shadowRoot.querySelectorAll('li')].forEach(element => {
       element.classList.toggle('selected', false);
+      // disable tabindex on all buttons
+      [...element.querySelectorAll('button')].forEach(button => {
+        button.tabIndex = -1;
+      })
     });
   }
 
@@ -505,7 +528,9 @@ class EditableObject extends HTMLElement {
     this.#_handleItemListeners(items, buttons);
     this.#_updateToolbars();
 
-    lis[0].querySelector('input').click();
+    const firstInput = lis[0].querySelector('input');
+    firstInput.click();
+    firstInput.focus();
 
     this.#object = obj;
   }
