@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <editable-object id="eo-test"></editable-object>
+    <script src="editable-object.js"></script>
+    <script>
+      const eo = document.querySelector('#eo-test');
+      eo.object = {
+        property1: "value1",
+        property2: "value2",
+        property3: 3,
+        property4: 4.4,
+        property5: null,
+        property6: false,
+        property7: [1,2,3,4,5],
+        property8: {
+          property1: "value1",
+          property2: true,
+          property3: [6,7,8,9]
+        }
+      };
+    </script>
+  </body>
+</html>

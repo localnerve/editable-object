@@ -1,0 +1,120 @@
+:host {
+  --eo-min-width: 300px;
+  --eo-bg-color: #fafafa;
+  --eo-border-radius: 4px;
+  --eo-border-focused-color: #444;
+  --eo-border-defocused-color: #aaa;
+  --eo-item-selected-color: #f8f8f8;
+  --eo-item-hover-color: #eee;
+  --eo-item-input-border-color: #bbb;
+  --eo-icon-color: #444;
+}
+
+:host(.disabled) {
+  pointer-events: none;
+}
+      
+.editable-object {
+  background: var(--eo-bg-color);
+  border: 1px solid var(--eo-border-focused-color);
+  border-radius: var(--eo-border-radius);
+  padding: 12px;
+  min-width: var(--eo-min-width);
+}
+
+.editable-object.defocused {
+  border: 1px solid var(--eo-border-defocused-color);
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  height: 36px;
+  padding: 0 8px;
+  cursor: default;
+}
+
+.editable-object:not(.defocused) li.selected {
+  background: var(--eo-item-selected-color);
+}
+
+li, div > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editable-object:not(.defocused) li:hover {
+  background: var(--eo-item-hover-color);
+}
+
+.property-wrapper {
+  display: flex;
+  padding-right: 8px;
+  padding-left: 2px;
+  align-items: baseline;
+}
+
+.toolbar {
+  display: flex;
+  gap: 6px;
+}
+
+li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toolbar button {
+  position: relative;
+}
+
+.toolbar button:hover:before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: rgba(0,0,0,0.1);
+  left: -4px;
+  top: -4px;
+  border-radius: 50%;
+}
+
+.icon {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0;
+  fill: var(--eo-icon-color);
+  padding: 0;
+}
+
+.icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.new-object-property {
+  margin-top: 16px;
+  padding: 0 8px 0 2px;
+}
+
+.add-new-object-property-input, .edit-object-property-input {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--eo-item-input-border-color);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.editable-object.defocused .add-new-object-property-input {
+  border: 1px solid transparent;
+  opacity: 0.5;
+}
+
+.edit-object-property-input {
+  margin-left: -8px;
+}

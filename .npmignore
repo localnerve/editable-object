@@ -1,0 +1,7 @@
+*.html
+*.css
+*.js
+test
+src
+!dist/*.js
+!dist/*.css

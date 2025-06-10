@@ -1,0 +1,44 @@
+{
+  "name": "@localnerve/editable-object",
+  "version": "0.1.0",
+  "description": "A vanillajs editable-object web component for visual object display and editing",
+  "main": "dist/index.js",
+  "browser": "dist/editable-object.js",
+  "type": "module",
+  "scripts": {
+    "build:debug": "pushd src && node --inspect-brk build.js && popd",
+    "build": "pushd src && node build.js && webpack-cli --config webpack.prod.config.js && popd",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build",
+    "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@localnerve/web-component-build": "^1.8.2",
+    "babel-loader": "10.0.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.1.0",
+    "express": "5.1.0",
+    "webpack-cli": "6.0.1"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/localnerve/editable-object.git"
+  },
+  "keywords": [
+    "editable",
+    "list",
+    "webcomponent",
+    "javascript",
+    "vanillajs"
+  ],
+  "author": "Alex Grant <alex@localnerve.com> (https://www.localnerve.com)",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/localnerve/editable-object/issues"
+  },
+  "homepage": "https://github.com/localnerve/editable-object/tree/master/src/editable-object#readme"
+}
