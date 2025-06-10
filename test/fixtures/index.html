@@ -23,6 +23,10 @@
           property3: [6,7,8,9]
         }
       };
+      eo.addEventListener('change', e => {
+        const { detail } = e;
+        console.log('@@@ got change event', detail);
+      });
     </script>
   </body>
 </html>
