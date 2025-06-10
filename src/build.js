@@ -31,11 +31,12 @@ async function buildwc () {
     minifySkip: !!process.env.SKIP_MIN
   });
 
-  // webpack creates the dist bundle from stageDir
+  // INFO: webpack creates the dist bundle from stageDir
 
   await fs.cp(indexFilePath, path.join(distDir, path.basename(indexFilePath)));
   await fs.cp(result.cssPath, path.join(distDir, path.basename(result.cssPath)));
 
+  // Keep a test fixture copy
   await fs.cp(path.join(stageDir, path.basename(jsFilePath)), path.join(testFixturePath, path.basename(jsFilePath)));
 }
 
