@@ -1,6 +1,7 @@
 *.html
 *.css
 *.js
+.github
 test
 src
 !dist/*.js
