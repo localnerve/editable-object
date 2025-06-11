@@ -5,6 +5,7 @@ export default [{
   name: 'global',
   ignores: [
     'node_modules/**',
+    'test/fixtures/**',
     'dist/**',
     'tmp/**',
     'src/tmp/**'

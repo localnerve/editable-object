@@ -43,6 +43,80 @@ class EditableObject extends HTMLElement {
   }
 
   /**
+   * Convert to string presentable representation.
+   * 
+   * @param {Object} obj - The value
+   * @returns {String} A string presentable value
+   */
+  #_stringable (obj) {
+    if (typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean' || obj === null) {
+      return obj;
+    }
+
+    if (typeof obj === 'undefined' || typeof obj === 'function' || typeof obj === 'symbol') {
+      return null;
+    }
+
+    if (typeof obj === 'bigint') {
+      return `${obj}n`;
+    }
+
+    if (Object.prototype.toString.call(obj) === '[object RegExp]') {
+      obj = {
+        __pattern: obj.source,
+        flags: obj.flags
+      };
+    }
+
+    let result = JSON.stringify(obj);
+    if (result[0] === '{') {
+      result = result.replaceAll('"', '\'');
+    }
+    return result;
+  }
+
+  /**
+   * Convert a stringable value back into js.
+   * 
+   * @param {String} val - The stringable value from the UI
+   * @returns {Any} The js value of the string, or some garbage if its really screwed up
+   */
+  #_jsable (val) {
+    const value = val.trim();
+    
+    let num = parseInt(value, 10);
+    if (num) return num;
+    num = parseFloat(value);
+    if (num) return num;
+
+    if (/\d+n$/.test(value)) {
+      return BigInt(value.slice(0, -1));
+    }
+
+    if (value.toLowerCase() === 'false') return false;
+    if (value.toLowerCase() === 'true') return true;
+    if (value.toLowerCase() === 'null') return null;
+
+    let result;
+    try {
+      let input = value;
+      if (input[0] === '{') {
+        input = input.replaceAll('\'', '"');
+      }
+      const objOrArray = JSON.parse(input);
+      if (Object.keys(objOrArray).includes('__pattern')) {
+        result = new RegExp(objOrArray.__pattern, objOrArray.flags);
+      } else {
+        result = objOrArray;
+      }
+    } catch {
+      result = value; // plain old string or real unparsable trash
+    }
+
+    return result;
+  }
+
+  /**
    * Generates the inner HTML of the li of each property
    *
    * @param {String} key - The property key
@@ -213,8 +287,8 @@ class EditableObject extends HTMLElement {
       this.dispatchEvent(this.#_changeEvent({
         action: 'edit',
         key,
-        previous: previousValue,
-        new: newValue
+        previous: this.#_jsable(previousValue),
+        new: this.#_jsable(newValue)
       }));
     }
   }
@@ -274,7 +348,7 @@ class EditableObject extends HTMLElement {
     this.dispatchEvent(this.#_changeEvent({
       action: 'remove',
       key,
-      previous: value,
+      previous: this.#_jsable(value),
       new: null
     }));
   }
@@ -478,7 +552,7 @@ class EditableObject extends HTMLElement {
           action: 'add',
           key,
           previous: null,
-          new: value
+          new: this.#_jsable(value)
         }));
         
         const objectProperties = this.shadowRoot.querySelector('.object-properties');
@@ -530,7 +604,7 @@ class EditableObject extends HTMLElement {
 
     for (const [key, value] of Object.entries(obj)) {
       const li = document.createElement('li');
-      li.innerHTML = this.#_propertyHTML(key, value);
+      li.innerHTML = this.#_propertyHTML(key, this.#_stringable(value));
       propContainer.appendChild(li);
       lis.push(li);
       items.push(li.querySelector('.property-wrapper'));
