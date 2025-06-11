@@ -51,10 +51,18 @@ This web component issues a 'changed' CustomEvent when an object property is add
 * `--eo-border-radius` - The border-radius of the control. Defaults to 4px.
 * `--eo-border-focused-color` - The color of the control border when focused. Defaults to #444.
 * `--eo-border-defocused-color` - The color of the control border when not focused. Defaults to #aaa.
-* `--eo-item-selected-color` - The background color of the property list item when selected. Defaults to #eee.
+* `--eo-item-selected-bg-color` - The background color of the property list item when selected. Defaults to #eee.
+* `--eo-item-selected-color` - The foreground text color of the property list item when selected. Defaults to #222.
+* `--eo-item-selected-border-radius` - The border-radius of the item selection box. Defaults to 4px.
 * `--eo-item-hover-color` - The background color of the propert list item when hovered. Defaults to #ddd.
-* `--eo-item-input-border-color` - The border color of 'add' and 'edit' input boxes. Defaults to #bbb.
 * `--eo-icon-color` - The color of the toolbar button icons. Defaults to #444.
+* `--eo-add-new-icon-color` - The color of the 'add new property' toolbar button icon. Defdaults to #444.
+* `--eo-input-border-color` - The border color of 'add' and 'edit' input boxes. Defaults to #bbb.
+* `--eo-input-bg-color` - The background color of input controls. Defaults to #444.
+* `--eo-input-color` - The foreground text color of input controls. Defaults to #eee.
+* `--eo-input-font-family` - The font family of input controls. Defaults to 'sans-serif'.
+* `--eo-input-placeholder-color` - The foreground text color of input placeholder text. Defaults to #aaa.
+
 
 ## Usage Example
 
