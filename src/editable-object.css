@@ -33,18 +33,20 @@
 ul {
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 li {
   line-height: 2.5;
   list-style: none;
   cursor: default;
+  padding: 0.5rem;
 }
 
-@media (min-width: 360px) {
-  li {
-    padding: 0 0.5rem;
-  }
+input {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--eo-item-input-border-color);  
 }
 
 .editable-object:not(.defocused) li.selected {
@@ -54,7 +56,7 @@ li {
 li, div > div {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .editable-object:not(.defocused, .touch) li:hover {
@@ -63,16 +65,40 @@ li, div > div {
 
 .property-wrapper {
   display: flex;
+  flex-flow: row wrap;
+  flex-grow: 1;
   align-items: baseline;
+  min-width: 10em;
 }
 
 .property-wrapper label {
-  padding-right: 1rem;
+  flex: 1 1 100%;
+  min-width: 8em;
+  max-width: 100%;
+}
+
+.property-wrapper input {
+  flex: 1;
+  min-width: 10em;
+  line-height: 1.5;
+}
+
+@media (min-width: 41.68em) {
+  .property-wrapper label {
+    flex-basis: auto;
+    max-width: 45%;
+    min-width: 15em;
+    padding-right: 0.5rem;
+  }
+  .property-wrapper input {
+    flex: 0 1 50%;
+    min-width: 15em;
+  }
 }
 
 .toolbar {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   padding-left: 1rem;
 }
 
@@ -116,9 +142,6 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
 }
 
 .add-new-object-property-input, .edit-object-property-input {
-  padding: 6px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--eo-item-input-border-color);
   min-width: 18em;
 }
 
