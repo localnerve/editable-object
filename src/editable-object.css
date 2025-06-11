@@ -4,10 +4,17 @@
   --eo-border-radius: 4px;
   --eo-border-focused-color: #444;
   --eo-border-defocused-color: #aaa;
-  --eo-item-selected-color: #eee;
+  --eo-item-selected-bg-color: #eee;
+  --eo-item-selected-color: #222;
+  --eo-item-selected-border-radius: 4px;
   --eo-item-hover-color: #ddd;
-  --eo-item-input-border-color: #bbb;
   --eo-icon-color: #444;
+  --eo-add-new-icon-color: #444;
+  --eo-input-border-color: #bbb;
+  --eo-input-bg-color: #444;
+  --eo-input-color: #eee;
+  --eo-input-font-family: sans-serif;
+  --eo-input-placeholder-color: #aaa;
 }
 
 :host(.disabled) {
@@ -46,11 +53,21 @@ li {
 input {
   padding: 6px 8px;
   border-radius: 4px;
-  border: 1px solid var(--eo-item-input-border-color);  
+  line-height: 1.5;
+  border: 1px solid var(--eo-input-border-color);
+  color: var(--eo-input-color);
+  background: var(--eo-input-bg-color);
+  font-family: var(--eo-input-font-family);
+}
+
+input::placeholder {
+  color: var(--eo-input-placeholder-color);
 }
 
 .editable-object:not(.defocused) li.selected {
-  background: var(--eo-item-selected-color);
+  background: var(--eo-item-selected-bg-color);
+  color: var(--eo-item-selected-color);
+  border-radius: var(--eo-item-selected-border-radius);
 }
 
 li, div > div {
@@ -80,7 +97,6 @@ li, div > div {
 .property-wrapper input {
   flex: 1;
   min-width: 10em;
-  line-height: 1.5;
 }
 
 @media (min-width: 41.68em) {
@@ -109,6 +125,11 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
 
 .toolbar button {
   position: relative;
+  fill: var(--eo-icon-color);
+}
+
+.editable-object-add-property.icon {
+  fill: var(--eo-add-new-icon-color);
 }
 
 .toolbar button:hover:before {
@@ -142,7 +163,7 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
 }
 
 .add-new-object-property-input, .edit-object-property-input {
-  min-width: 18em;
+  min-width: 20em;
 }
 
 .editable-object.defocused .add-new-object-property-input {
