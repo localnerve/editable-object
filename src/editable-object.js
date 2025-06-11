@@ -89,6 +89,15 @@ class EditableObject extends HTMLElement {
   }
 
   /**
+   * Test for touchscreen.
+   * 
+   * @returns {Boolean} true if touch, false otherwise
+   */
+  #_isTouch () {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+  /**
    * Get the containing li element from an element inside it.
    *
    * @param {HTMLElement} - Element an element inside the item li
@@ -129,6 +138,11 @@ class EditableObject extends HTMLElement {
     });
   }
 
+  /**
+   * Handle enter, spacebar keypress in li elements as alternate selection.
+   * 
+   * @param {Event} e - The event object
+   */
   #_propertyInputKeySelect (e) {
     if (e.target.nodeName === 'INPUT') {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -337,7 +351,7 @@ class EditableObject extends HTMLElement {
    * @param {Array} buttons - A list of buttons inside the item li
    */
   #_handleItemListeners (items, buttons) {
-    const isTouch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isTouch = this.#_isTouch();
 
     const doubleTapEditHandler = this.#_createDoubleTapHandler();
     const editHandler = this.#_propertyEditStart.bind(this);
@@ -582,8 +596,13 @@ class EditableObject extends HTMLElement {
     const addElementInput = shadowRoot.querySelector('.add-new-object-property-input');
     const addElementButton = shadowRoot.querySelector('.editable-object-add-property');
 
+    const isTouch = this.#_isTouch();
     const docClickListener = this.#_defocusEditableList.bind(this);
     const containerFocusListener = this.#_setFocus.bind(this);
+
+    if (isTouch) {
+      container.classList.add('touch');
+    }
 
     document.addEventListener('click', docClickListener, false);
     this.#listeners.push({ host: document, type: 'click', listener: docClickListener });
