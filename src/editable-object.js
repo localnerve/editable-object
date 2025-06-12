@@ -278,6 +278,7 @@ class EditableObject extends HTMLElement {
 
       this._editing = false;
       inp.readOnly = true;
+      this.#object[key] = this.#_jsable(newValue);
 
       this.#editListeners.forEach(editListener => {
         editListener.host.removeEventListener(editListener.type, editListener.listener);
@@ -304,6 +305,7 @@ class EditableObject extends HTMLElement {
     if (!prev) return false;
     li.parentNode.insertBefore(li, prev);
     this.#_updateToolbars();
+    li.querySelector('.editable-object-up-property').focus();
     return true;
   }
 
@@ -318,6 +320,7 @@ class EditableObject extends HTMLElement {
     if (!next) return false;
     li.parentNode.insertBefore(next, li);
     this.#_updateToolbars();
+    li.querySelector('.editable-object-down-property').focus();
     return true;
   }
 
@@ -344,6 +347,7 @@ class EditableObject extends HTMLElement {
     const value = li.querySelector('.property-wrapper > input').value.trim();
     
     this.#_removeListItem(li);
+    delete this.#object[key];
     
     this.dispatchEvent(this.#_changeEvent({
       action: 'remove',
@@ -534,12 +538,14 @@ class EditableObject extends HTMLElement {
       const rawInput = textInput.value.trim();
       
       if (rawInput !== '') {
-        const [rawKey, rawValue] = rawInput.split(':');
+        const re = /^\s*(?<property>[^\s:]+)\s*:\s*(?<value>[^$]+)$/;
+        const captures = rawInput.match(re)?.groups;
+        const [rawKey, rawValue] = captures ? Object.values(captures) : ['',''];
         const key = rawKey.trim();
         const value = rawValue.trim();
 
-        if (this.#_keyExists(key)) {
-          // TODO: put out error message for duplicate property key input here
+        if (!key || this.#_keyExists(key)) {
+          // TODO: put out error message for duplicate or bad property key input here
           textInput.focus();
           return;
         }
