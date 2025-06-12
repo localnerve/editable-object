@@ -8,6 +8,9 @@
   --eo-item-selected-color: #222;
   --eo-item-selected-border-radius: 4px;
   --eo-item-hover-color: #ddd;
+  --eo-item-hover-border-width: 1px;
+  --eo-item-hover-border-color: #ddd;
+  --eo-item-hover-border-radius: 4px;
   --eo-icon-color: #444;
   --eo-add-new-icon-color: #444;
   --eo-input-border-color: #bbb;
@@ -77,7 +80,8 @@ li, div > div {
 }
 
 .editable-object:not(.defocused, .touch) li:hover {
-  background: var(--eo-item-hover-color);
+  border: var(--eo-item-hover-border-width) solid var(--eo-item-hover-border-color);
+  border-radius: var(--eo-item-hover-border-radius);
 }
 
 .property-wrapper {

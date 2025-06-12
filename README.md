@@ -54,7 +54,9 @@ This web component issues a 'changed' CustomEvent when an object property is add
 * `--eo-item-selected-bg-color` - The background color of the property list item when selected. Defaults to #eee.
 * `--eo-item-selected-color` - The foreground text color of the property list item when selected. Defaults to #222.
 * `--eo-item-selected-border-radius` - The border-radius of the item selection box. Defaults to 4px.
-* `--eo-item-hover-color` - The background color of the propert list item when hovered. Defaults to #ddd.
+* `--eo-item-hover-border-width` - The hover border width. Defaults to 1px.
+* `--eo-item-hover-border-color` - The hover border color. Defaults to #ddd.
+* `--eo-item-hover-border-radius` - The border-radius of the item hover box. Defaults to 4px.
 * `--eo-icon-color` - The color of the toolbar button icons. Defaults to #444.
 * `--eo-add-new-icon-color` - The color of the 'add new property' toolbar button icon. Defdaults to #444.
 * `--eo-input-border-color` - The border color of 'add' and 'edit' input boxes. Defaults to #bbb.
