@@ -40,7 +40,7 @@ export default {
       }
     }),
     new webpack.BannerPlugin({
-      banner: `editable-list@${pkgJson.version}, Copyright (c) ${(new Date()).getFullYear()} Alex Grant <alex@localnerve.com> (https://www.localnerve.com), LocalNerve LLC, BSD-3-Clause`,
+      banner: `editable-object@${pkgJson.version}, Copyright (c) ${(new Date()).getFullYear()} Alex Grant <alex@localnerve.com> (https://www.localnerve.com), LocalNerve LLC, BSD-3-Clause`,
       entryOnly: true
     })
   ]
