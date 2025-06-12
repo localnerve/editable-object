@@ -618,7 +618,6 @@ class EditableObject extends HTMLElement {
 
     const firstInput = lis[0].querySelector('input');
     firstInput.click();
-    firstInput.focus();
 
     this.#object = obj;
   }
