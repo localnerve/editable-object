@@ -99,7 +99,7 @@ li, div > div {
   min-width: 10em;
 }
 
-@media (min-width: 41.68em) {
+@media (min-width: 41.69em) {
   .property-wrapper label {
     flex-basis: auto;
     max-width: 45%;
@@ -107,8 +107,8 @@ li, div > div {
     padding-right: 0.5rem;
   }
   .property-wrapper input {
-    flex: 0 1 50%;
-    min-width: 15em;
+    flex: 1 1;
+    min-width: 16em;
   }
 }
 
