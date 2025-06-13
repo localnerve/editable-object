@@ -194,7 +194,9 @@ class EditableObject extends HTMLElement {
     // set tabindex on child buttons
     [...li.querySelectorAll('button')].forEach(button => {
       button.tabIndex = 0;
-    })
+    });
+    // give focus to the input element inside
+    li.querySelector('input').focus();
   }
 
   /**
@@ -493,7 +495,7 @@ class EditableObject extends HTMLElement {
    *
    * @param {PointerEvent} e - The event object
    */
-  #_defocusEditableList (e) {
+  #_defocusEditableObject (e) {
     if (!e.composedPath().includes(this)) {
       this.shadowRoot.querySelector('.editable-object').classList.add('defocused');
     }
@@ -622,9 +624,6 @@ class EditableObject extends HTMLElement {
     this.#_handleItemListeners(items, buttons);
     this.#_updateToolbars();
 
-    const firstInput = lis[0].querySelector('input');
-    firstInput.click();
-
     this.#object = obj;
   }
 
@@ -676,7 +675,7 @@ class EditableObject extends HTMLElement {
     const addElementButton = shadowRoot.querySelector('.editable-object-add-property');
 
     const isTouch = this.#_isTouch();
-    const docClickListener = this.#_defocusEditableList.bind(this);
+    const docClickListener = this.#_defocusEditableObject.bind(this);
     const containerFocusListener = this.#_setFocus.bind(this);
 
     if (isTouch) {
