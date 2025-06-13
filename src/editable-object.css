@@ -4,7 +4,7 @@
   --eo-border-radius: 4px;
   --eo-border-focused-color: #444;
   --eo-border-defocused-color: #aaa;
-  --eo-item-selected-bg-color: #eee;
+  --eo-item-selected-bg-color: #999;
   --eo-item-selected-color: #222;
   --eo-item-selected-border-radius: 4px;
   --eo-item-hover-color: #ddd;
@@ -13,6 +13,9 @@
   --eo-item-hover-border-radius: 4px;
   --eo-icon-color: #444;
   --eo-add-new-icon-color: #444;
+  --eo-input-focus-outline-color: #26b;
+  --eo-input-focus-outline-width: 1px;
+  --eo-input-focus-outline-style: auto;
   --eo-input-border-color: #bbb;
   --eo-input-bg-color: #444;
   --eo-input-color: #eee;
@@ -61,6 +64,10 @@ input {
   color: var(--eo-input-color);
   background: var(--eo-input-bg-color);
   font-family: var(--eo-input-font-family);
+}
+
+input:focus-visible {
+  outline: var(--eo-input-focus-outline-color) var(--eo-input-focus-outline-style) var(--eo-input-focus-outline-width);
 }
 
 input::placeholder {

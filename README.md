@@ -51,14 +51,17 @@ This web component issues a 'changed' CustomEvent when an object property is add
 * `--eo-border-radius` - The border-radius of the control. Defaults to 4px.
 * `--eo-border-focused-color` - The color of the control border when focused. Defaults to #444.
 * `--eo-border-defocused-color` - The color of the control border when not focused. Defaults to #aaa.
-* `--eo-item-selected-bg-color` - The background color of the property list item when selected. Defaults to #eee.
+* `--eo-item-selected-bg-color` - The background color of the property list item when selected. Defaults to #999.
 * `--eo-item-selected-color` - The foreground text color of the property list item when selected. Defaults to #222.
 * `--eo-item-selected-border-radius` - The border-radius of the item selection box. Defaults to 4px.
 * `--eo-item-hover-border-width` - The hover border width. Defaults to 1px.
 * `--eo-item-hover-border-color` - The hover border color. Defaults to #ddd.
 * `--eo-item-hover-border-radius` - The border-radius of the item hover box. Defaults to 4px.
 * `--eo-icon-color` - The color of the toolbar button icons. Defaults to #444.
-* `--eo-add-new-icon-color` - The color of the 'add new property' toolbar button icon. Defdaults to #444.
+* `--eo-add-new-icon-color` - The color of the 'add new property' toolbar button icon. Defaults to #444.
+* `--eo-input-focus-outline-color` - The color of the focus ring on the input boxes. Defaults to #26b.
+* `--eo-input-focus-outline-width`- The width of the focus ring on the input boxes. Defaults to 1px.
+* `--eo-input-focus-outline-style` - The style of the focus ring on the input boxes. Defaults to 'auto'.
 * `--eo-input-border-color` - The border color of 'add' and 'edit' input boxes. Defaults to #bbb.
 * `--eo-input-bg-color` - The background color of input controls. Defaults to #444.
 * `--eo-input-color` - The foreground text color of input controls. Defaults to #eee.
