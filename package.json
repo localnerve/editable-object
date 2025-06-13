@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -13,10 +13,10 @@
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
+    "@eslint/js": "^9.29.0",
     "@localnerve/web-component-build": "^1.11.0",
     "babel-loader": "10.0.0",
-    "eslint": "^9.28.0",
+    "eslint": "^9.29.0",
     "express": "5.1.0",
     "globals": "^16.2.0",
     "webpack-cli": "6.0.1"
