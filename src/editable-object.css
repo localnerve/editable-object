@@ -73,6 +73,10 @@ input::placeholder {
   color: var(--eo-input-placeholder-color);
 }
 
+.editable-object.defocused input {
+  opacity: 0.7;
+}
+
 .editable-object:not(.defocused) li.selected {
   background: var(--eo-item-selected-bg-color);
   color: var(--eo-item-selected-color);
@@ -169,20 +173,17 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
 
 .new-object-property {
   margin-top: 2rem;
+  width: 100%;
 }
 
 .add-new-object-property-input {
-  min-width: 20em;
+  min-width: 18em;
+  flex: 1;
 }
 
 .add-new-object-property-input.error,
 .property-wrapper input.error  {
   outline: red auto 1px;
-}
-
-.editable-object.defocused .add-new-object-property-input {
-  border: 1px solid transparent;
-  opacity: 0.5;
 }
 
 .hide {

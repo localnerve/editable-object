@@ -646,6 +646,7 @@ class EditableObject extends HTMLElement {
       });
     }
     
+    const loading = this.shadowRoot.querySelector('#loading');
     const propContainer = this.shadowRoot.querySelector('.object-properties');
     propContainer.innerHTML = '';
 
@@ -670,6 +671,8 @@ class EditableObject extends HTMLElement {
     this.#_handleLiListeners(lis);
     this.#_handleItemListeners(items, buttons);
     this.#_updateToolbars();
+
+    loading.classList.add('hide');
 
     this.#object = obj;
   }
@@ -741,6 +744,7 @@ class EditableObject extends HTMLElement {
     this.#disableEdit = disableEdit?.toLowerCase() === 'true' ? true : false;
 
     const container = shadowRoot.querySelector('.editable-object');
+    const loading = shadowRoot.querySelector('#loading');
     const newPropertyWrapper = shadowRoot.querySelector('.new-object-property');
     const addElementInput = shadowRoot.querySelector('.add-new-object-property-input');
     const addElementButton = shadowRoot.querySelector('.editable-object-add-property');
@@ -748,6 +752,10 @@ class EditableObject extends HTMLElement {
     const isTouch = this.#_isTouch();
     const docClickListener = this.#_defocusEditableObject.bind(this);
     const containerFocusListener = this.#_setFocus.bind(this);
+
+    if (this.object) {
+      loading.classList.add('hide');
+    }
 
     if (isTouch) {
       container.classList.add('touch');
