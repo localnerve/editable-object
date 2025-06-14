@@ -34,13 +34,19 @@ This web component issues a 'changed' CustomEvent when an object property is add
 
 * `add-property-placeholder` - *Optional*. The text that prompts a user to add a new property to the object. Defaults to 'Add new property in key:value format'.
 
-  > Property name is `addPropertyPlaceholder` (camel case).
+  > Property name is `addPropertyPlaceholder`.
+
+* `disable-edit` - *Optional*. Disallow the editing functions. Makes this component a read-only view of the object.
+
+  > Property name is `disableEdit`.
 
 ## Javascript Public Properties and Methods
 
 * `object` **Property** - Assign a javascript `Object` to set the component's internals for editing. Any existing object is replaced. JSON compatible properties only (string, number, boolean, array, object, null).
 
 * `addPropertyPlaceholder` **Property** - Assign a prompt to show the user in the new property/value input box to override the default 'Add new property in key:value format'.
+
+* `disableEdit` **Property** - Assign to true to make the control read-only and disallow any editing.
 
 * `mergeObject(newObject)` **method** - Call to merge more properties into the underlying object under edit.
 

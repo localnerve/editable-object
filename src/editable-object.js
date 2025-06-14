@@ -1,12 +1,16 @@
 /**
  * A vanillajs editable-object web component.
  * 
+ * TODOs:
+ *   1. gracefully handle connectedCallback object parse error
+ * 
  * Copyright (c) 2025 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
 
 class EditableObject extends HTMLElement {
   #object = null;
+  #disableEdit = false;
   
   // Element references and listeners for cleanup
   // [{ host, type, listener }, ...]
@@ -15,10 +19,11 @@ class EditableObject extends HTMLElement {
   #editListeners = [];
   
   // Observed attributes
-  static #observedAttributes = ['object', 'add-property-placeholder'];
+  static #observedAttributes = ['object', 'add-property-placeholder', 'disable-edit'];
   static #observedAttributeDefaults = {
     object: {},
-    addPropertyPlaceholder: 'Add new property in key:value format'
+    'add-property-placeholder': 'Add new property in key:value format',
+    'disabled-edit': false
   };
   static get observedAttributes () {
     return this.#observedAttributes;
@@ -37,7 +42,11 @@ class EditableObject extends HTMLElement {
    */
   #observedAttributeValue (attributeName) {
     if (this.hasAttribute(attributeName)) {
-      return this.getAttribute(attributeName);
+      const attributeValue = this.getAttribute(attributeName);
+      if (/^\s*(?:true|false)\s*$/i.test(attributeValue)) {
+        return attributeValue !== 'false';
+      }
+      return attributeValue;
     }
     return EditableObject.#observedAttributeDefaults[attributeName];
   }
@@ -79,14 +88,13 @@ class EditableObject extends HTMLElement {
    * Convert a stringable value back into js.
    * 
    * @param {String} val - The stringable value from the UI
+   * @param {HTMLElement} validateElement - The element to add validation classes to for reporting
    * @returns {Any} The js value of the string, or some garbage if its really screwed up
    */
-  #_jsable (val) {
+  #_jsable (val, validateElement = null) {
     const value = val.trim();
-    
-    let num = parseInt(value, 10);
-    if (num) return num;
-    num = parseFloat(value);
+
+    let num = parseFloat(value);
     if (num) return num;
 
     if (/\d+n$/.test(value)) {
@@ -97,10 +105,12 @@ class EditableObject extends HTMLElement {
     if (value.toLowerCase() === 'true') return true;
     if (value.toLowerCase() === 'null') return null;
 
+    let isObjectInput = false;
     let result;
     try {
       let input = value;
       if (input[0] === '{') {
+        isObjectInput = true;
         input = input.replaceAll('\'', '"');
       }
       const objOrArray = JSON.parse(input);
@@ -110,6 +120,10 @@ class EditableObject extends HTMLElement {
         result = objOrArray;
       }
     } catch {
+      if (isObjectInput && validateElement) {
+        validateElement.classList.add('error');
+        throw new Error('Bad object input');
+      }
       result = value; // plain old string or real unparsable trash
     }
 
@@ -156,9 +170,15 @@ class EditableObject extends HTMLElement {
     const ups = this.shadowRoot.querySelectorAll('.editable-object-up-property');
     const downs = this.shadowRoot.querySelectorAll('.editable-object-down-property');
     const len = ups.length;
+
     for (let i = 0; i < len; i++) {
       ups[i].style.visibility = (i == 0 ? 'hidden' : 'visible');
       downs[i].style.visibility = (i == len - 1 ? 'hidden' : 'visible');
+    }
+
+    if (this.#disableEdit) {
+      const deletes = this.shadowRoot.querySelectorAll('.editable-object-remove-property');
+      deletes.forEach(button => button.classList.add('hide'));
     }
   }
 
@@ -220,7 +240,7 @@ class EditableObject extends HTMLElement {
    * @param {Event} e - The event object
    */
   #_propertyInputKeySelect (e) {
-    if (e.target.nodeName === 'INPUT') {
+    if (e.target.nodeName === 'INPUT' && !e.target.classList.contains('error')) {
       if (e.key === 'Enter' || e.key === ' ') {
         e.target.click();
       }
@@ -280,19 +300,30 @@ class EditableObject extends HTMLElement {
 
       this._editing = false;
       inp.readOnly = true;
-      this.#object[key] = this.#_jsable(newValue);
+
+      let jsValue;
+      let badInput = false;
+      try {
+        jsValue = this.#_jsable(newValue, inp);
+      } catch {
+        badInput = true;
+      }
 
       this.#editListeners.forEach(editListener => {
         editListener.host.removeEventListener(editListener.type, editListener.listener);
       });
       this.#editListeners.length = 0;
 
-      this.dispatchEvent(this.#_changeEvent({
-        action: 'edit',
-        key,
-        previous: this.#_jsable(previousValue),
-        new: this.#_jsable(newValue)
-      }));
+      if (!badInput) {
+        this.#object[key] = jsValue;
+
+        this.dispatchEvent(this.#_changeEvent({
+          action: 'edit',
+          key,
+          previous: this.#_jsable(previousValue),
+          new: jsValue
+        }));
+      }
     }
   }
 
@@ -443,20 +474,22 @@ class EditableObject extends HTMLElement {
         host: element,
         type: 'keypress',
         listener: keypressHandler
-      })
-      element.addEventListener('dblclick', editHandler, false);
-      this.#objectListeners.push({
-        host: element,
-        type: 'dblclick',
-        listener: editHandler
       });
-      if (isTouch) {
-        element.addEventListener('touchend', doubleTapEditHandler);
+      if (!this.#disableEdit) {
+        element.addEventListener('dblclick', editHandler, false);
         this.#objectListeners.push({
           host: element,
-          type: 'touchend',
-          listener: doubleTapEditHandler
+          type: 'dblclick',
+          listener: editHandler
         });
+        if (isTouch) {
+          element.addEventListener('touchend', doubleTapEditHandler);
+          this.#objectListeners.push({
+            host: element,
+            type: 'touchend',
+            listener: doubleTapEditHandler
+          });
+        }
       }
     });
 
@@ -480,14 +513,16 @@ class EditableObject extends HTMLElement {
         listener: moveDownClickHandler
       });
     });
-    buttons.remove.forEach(element => {
-      element.addEventListener('click', removeClickHandler, false);
-      this.#objectListeners.push({
-        host: element,
-        type: 'click',
-        listener: removeClickHandler
-      })
-    });
+    if (!this.#disableEdit) {
+      buttons.remove.forEach(element => {
+        element.addEventListener('click', removeClickHandler, false);
+        this.#objectListeners.push({
+          host: element,
+          type: 'click',
+          listener: removeClickHandler
+        })
+      });
+    }
   }
 
   /**
@@ -515,12 +550,14 @@ class EditableObject extends HTMLElement {
   }
 
   /**
-   * Unselect all editable object properties.
-   *
-   * @param {Event} e - The caller event object
+   * Unselect all editable object properties, clear any error class
    */
   #_cleanSelection() {
+    const newPropEl = this.shadowRoot.querySelector('.add-new-object-property-input');
+    newPropEl.classList.toggle('error', false);
+
     [...this.shadowRoot.querySelectorAll('li')].forEach(element => {
+      element.querySelector('.property-wrapper > input').classList.toggle('error', false);
       element.classList.toggle('selected', false);
       // disable tabindex on all buttons
       [...element.querySelectorAll('button')].forEach(button => {
@@ -546,26 +583,36 @@ class EditableObject extends HTMLElement {
         const key = rawKey.trim();
         const value = rawValue.trim();
 
-        if (!key || this.#_keyExists(key)) {
-          // TODO: put out error message for duplicate or bad property key input here
+        if (!key || !value || this.#_keyExists(key)) {
+          textInput.classList.add('error');
           textInput.focus();
           return;
         }
         
-        const newProperty = { [key]: value };
-        this.mergeObject(newProperty);
-        
-        // Tell listeners of the mutation event
-        this.dispatchEvent(this.#_changeEvent({
-          action: 'add',
-          key,
-          previous: null,
-          new: this.#_jsable(value)
-        }));
-        
-        const objectProperties = this.shadowRoot.querySelector('.object-properties');
-        objectProperties.lastChild.click();
-        textInput.value = '';
+        let badInput = false;
+        let jsValue;
+        try {
+          jsValue = this.#_jsable(value, textInput);
+        } catch {
+          badInput = true;
+        }
+
+        if (!badInput) {
+          const newProperty = { [key]: value }; // TODO: check if this should be jsValue
+          this.mergeObject(newProperty);
+          
+          // Tell listeners of the mutation event
+          this.dispatchEvent(this.#_changeEvent({
+            action: 'add',
+            key,
+            previous: null,
+            new: jsValue
+          }));
+          
+          const objectProperties = this.shadowRoot.querySelector('.object-properties');
+          objectProperties.lastChild.click();
+          textInput.value = '';
+        }
       }
     }
   }
@@ -643,11 +690,32 @@ class EditableObject extends HTMLElement {
    */
   set addPropertyPlaceholder (value) {
     const attributeName = 'add-property-placeholder';
+    const input = this.shadowRoot.querySelector('.add-new-object-property-input');
     if (value) {
       this.setAttribute(attributeName, value);
+      input.placeholder = value;
     } else {
       this.removeAttribute(attributeName);
+      input.placeholder = EditableObject.#observedAttributeDefaults[attributeName];
     }
+  }
+
+  /**
+   * Set the disable-edit attribute.
+   * 
+   * @param {Boolean} value - The new disable-edit value
+   */
+  set disableEdit (value) {
+    this.#disableEdit = value ? true : false;
+  }
+
+  /**
+   * Get teh disable-edit attribute.
+   * 
+   * @returns {Boolean} The disable-edit value
+   */
+  get disableEdit () {
+    return this.#disableEdit;
   }
 
   /**
@@ -669,6 +737,9 @@ class EditableObject extends HTMLElement {
     const objAttr = this.getAttribute('object');
     this.object = JSON.parse(objAttr); // TODO: could throw on bad input, bad input show user error
 
+    const disableEdit = this.getAttribute('disable-edit');
+    this.#disableEdit = disableEdit?.toLowerCase() === 'true' ? true : false;
+
     const container = shadowRoot.querySelector('.editable-object');
     const newPropertyWrapper = shadowRoot.querySelector('.new-object-property');
     const addElementInput = shadowRoot.querySelector('.add-new-object-property-input');
@@ -687,14 +758,22 @@ class EditableObject extends HTMLElement {
     container.addEventListener('click', containerFocusListener, true);
     this.#listeners.push({ host: container, type: 'click', listener: containerFocusListener });
 
-    const newPropClickListener = this.#_cleanSelection.bind(this);
-    const addPropListener = this.#_addNewProperty.bind(this);
-    newPropertyWrapper.addEventListener('click', newPropClickListener, true);
-    this.#listeners.push({ host: newPropertyWrapper, type: 'click', listener: newPropClickListener });
-    addElementInput.addEventListener('keypress', addPropListener, false);
-    this.#listeners.push({ host: addElementInput, type: 'keypress', listener: addPropListener });
-    addElementButton.addEventListener('click', addPropListener, false);
-    this.#listeners.push({ host: addElementButton, type: 'click', listener: addPropListener });
+    if (!this.#disableEdit) {
+      const addPropPlaceholder = this.getAttribute('add-property-placeholder');
+      this.addPropertyPlaceholder = addPropPlaceholder;
+
+      const cleanSelection = this.#_cleanSelection.bind(this);
+      newPropertyWrapper.addEventListener('click', cleanSelection, true);
+      this.#listeners.push({ host: newPropertyWrapper, type: 'click', listener: cleanSelection });
+
+      const addPropListener = this.#_addNewProperty.bind(this);
+      addElementInput.addEventListener('keypress', addPropListener, false);
+      this.#listeners.push({ host: addElementInput, type: 'keypress', listener: addPropListener });
+      addElementButton.addEventListener('click', addPropListener, false);
+      this.#listeners.push({ host: addElementButton, type: 'click', listener: addPropListener });
+    } else {
+      newPropertyWrapper.classList.add('hide');
+    }
   }
 
   disconnectedCallback () {

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-US">
+  <meta name="color-scheme" content="light dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-size: 16px;
+        font-family: sans-serif;
+
+        --site-color: #222236;
+        --site-fill: #222236;
+        --site-bg: #f7f2f2;
+        --duller-base: white;
+
+        color: var(--site-color);
+        fill: var(--site-fill);
+        background: var(--site-bg);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          --site-color: #f7f2f2;
+          --site-fill: #f7f2f2;
+          --site-bg: color-mix(in srgb, #222236, white 15%);
+          --duller-base: gray;
+        }
+      }
+
+      .eo {
+        --eo-bg-color: var(--site-bg);
+        --eo-border-focused-color: var(--site-color);
+        --eo-border-defocused-color: color-mix(in srgb, var(--site-color), var(--duller-base) 80%);
+        --eo-item-selected-bg-color: var(--site-color);
+        --eo-item-selected-color: var(--site-bg);
+        --eo-item-hover-border-width: 2px;
+        --eo-item-hover-border-color: var(--site-color);
+        --eo-icon-color: var(--site-bg);
+        --eo-add-new-icon-color: var(--site-color);
+        --eo-input-focus-outline-color: #00ccff;
+        --eo-input-focus-outline-width: 2px;
+        --eo-input-bg-color: color-mix(in srgb, var(--site-bg), var(--duller-base) 30%);
+        --eo-input-color: var(--site-color);
+        --eo-input-placeholder-color: color-mix(in srgb, var(--site-color), var(--duller-base) 50%);
+      }
+    </style>
+  </head>
+  <body>
+    <editable-object class="eo" id="eo" disable-edit="true"></editable-object>
+    <script src="editable-object.js"></script>
+    <script>
+      const eo = document.querySelector('#eo');
+      eo.object = {
+        property1: "value1",
+        property2: "value2",
+        property3: 3,
+        property4: 4.4,
+        prop41: "hey this is misaligned",
+        property5: null,
+        property6: false,
+        property7: [1,2,3,4,5],
+        property8: {
+          property1: "value1",
+          property2: true,
+          property3: [6,7,8,9]
+        }
+      };
+      eo.addEventListener('change', e => {
+        const { detail } = e;
+        console.log('@@@ got change event', detail);
+      });
+    </script>
+  </body>
+</html>
