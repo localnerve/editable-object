@@ -29,7 +29,7 @@ export default [{
   }
 }, {
   name: 'src-browser',
-  files: ['editable*.js'],
+  files: ['src/editable-object.js'],
   languageOptions: {
     globals: {
       ...globals.browser
