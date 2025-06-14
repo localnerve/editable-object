@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en-US">
+  <meta name="color-scheme" content="light dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-size: 16px;
+        font-family: sans-serif;
+
+        --site-color: #222236;
+        --site-fill: #222236;
+        --site-bg: #f7f2f2;
+        --duller-base: white;
+
+        --spinner-size: 150px;
+        --spinner-ring-size: 10px;
+        --spinner-speed: 1.5;
+        --accent-color: #3498db;
+
+        color: var(--site-color);
+        fill: var(--site-fill);
+        background: var(--site-bg);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          --site-color: #f7f2f2;
+          --site-fill: #f7f2f2;
+          --site-bg: color-mix(in srgb, #222236, white 15%);
+          --duller-base: gray;
+        }
+      }
+
+      .eo {
+        --eo-bg-color: var(--site-bg);
+        --eo-border-focused-color: var(--site-color);
+        --eo-border-defocused-color: color-mix(in srgb, var(--site-color), var(--duller-base) 80%);
+        --eo-item-selected-bg-color: var(--site-color);
+        --eo-item-selected-color: var(--site-bg);
+        --eo-item-hover-border-width: 2px;
+        --eo-item-hover-border-color: var(--site-color);
+        --eo-icon-color: var(--site-bg);
+        --eo-add-new-icon-color: var(--site-color);
+        --eo-input-focus-outline-color: #00ccff;
+        --eo-input-focus-outline-width: 2px;
+        --eo-input-bg-color: color-mix(in srgb, var(--site-bg), var(--duller-base) 30%);
+        --eo-input-color: var(--site-color);
+        --eo-input-placeholder-color: color-mix(in srgb, var(--site-color), var(--duller-base) 50%);
+      }
+
+      @property --spinner-start-angle {
+        syntax: '<angle>';
+        inherits: false;
+        initial-value: 0deg;
+      }
+      @property --spinner-end-angle {
+        syntax: '<angle>';
+        inherits: false;
+        initial-value: 360deg;
+      }
+      /* fallback */
+      @property --property-zero {
+        syntax: '<number>';
+        inherits: false;
+        initial-value: 0;
+      }
+
+      .spinner {
+        --_size: var(--spinner-size, 2em);
+        --_ring-size: var(--spinner-ring-size, calc(var(--_size) / 10));
+        --_duration: calc(2s / var(--spinner-speed, 1));
+        box-sizing: border-box;
+        
+        width: var(--_size);
+        height: var(--_size);
+        margin-inline: 1em;
+        border-radius: 100vmax;
+        background: 
+            conic-gradient(transparent 0deg, transparent var(--spinner-start-angle), var(--accent-color) var(--spinner-start-angle), var(--accent-color) var(--spinner-end-angle), transparent var(--spinner-end-angle));		
+        mask-image: radial-gradient(transparent calc(var(--_size) / 2 - var(--_ring-size) - 1px), black calc(var(--_size) / 2 - var(--_ring-size)));
+        animation: spinner calc(var(--_duration) / 0.6) ease-in-out infinite, spin var(--_duration) linear infinite;
+        
+        /* remove border if @property is supported */
+        border: var(--property-zero, var(--_ring-size)) solid color-mix(in hsl, currentcolor 10%, transparent);
+        border-top: var(--property-zero, var(--_ring-size)) solid var(--accent-color);
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes spinner {
+        0% {
+          --spinner-start-angle: 0deg;
+          --spinner-end-angle: 10deg;
+        }
+        50% {
+          --spinner-start-angle: 35deg;
+          --spinner-end-angle: 315deg;
+        }
+        100% {
+          --spinner-start-angle: 350deg;
+          --spinner-end-angle: 360deg;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <editable-object class="eo" id="eo">
+      <div slot="loading" class="spinner"></div>
+    </editable-object>
+
+    <script src="editable-object.js"></script>
+    
+    <script>
+      const eo = document.querySelector('#eo');
+      eo.addEventListener('change', e => {
+        const { detail } = e;
+        console.log('@@@ got change event', detail);
+      });
+
+      // simulate a delay
+      setTimeout(() => {
+        eo.object = {
+          property1: "value1",
+          property2: "value2",
+          property3: 3,
+          property4: 4.4,
+          prop41: "hey this is misaligned",
+          property5: null,
+          property6: false,
+          property7: [1,2,3,4,5],
+          property8: {
+            property1: "value1",
+            property2: true,
+            property3: [6,7,8,9]
+          }
+        };
+      }, 10000);
+    </script>
+  </body>
+</html>

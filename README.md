@@ -40,6 +40,10 @@ This web component issues a 'changed' CustomEvent when an object property is add
 
   > Property name is `disableEdit`.
 
+## Named Slots
+
+* `"loading"` - *Optional*. A named slot you can use to bring in content to display during loading. Hidden after initial object parse or later when object is set.
+
 ## Javascript Public Properties and Methods
 
 * `object` **Property** - Assign a javascript `Object` to set the component's internals for editing. Any existing object is replaced. JSON compatible properties only (string, number, boolean, array, object, null).
