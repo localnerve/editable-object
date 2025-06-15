@@ -36,8 +36,11 @@ async function buildwc () {
   await fs.cp(indexFilePath, path.join(distDir, path.basename(indexFilePath)));
   await fs.cp(result.cssPath, path.join(distDir, path.basename(result.cssPath)));
 
-  // Keep a test fixture copy
+  // maintain test fixture copies
   await fs.cp(path.join(stageDir, path.basename(jsFilePath)), path.join(testFixturePath, path.basename(jsFilePath)));
+
+  const normalizeCss = 'modern-normalize.css';
+  await fs.cp(path.join(thisDir, '../', 'node_modules/modern-normalize', normalizeCss), path.join(testFixturePath, normalizeCss));
 }
 
 await buildwc();
