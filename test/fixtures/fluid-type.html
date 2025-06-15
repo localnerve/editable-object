@@ -22,6 +22,12 @@
 
         padding: 0.5rem;
       }
+      
+      @media (min-width: 360px) {
+        body {
+          padding: 1rem;
+        }    
+      }
 
       @media (prefers-color-scheme: dark) {
         body {
@@ -48,10 +54,22 @@
         --eo-input-color: var(--site-color);
         --eo-input-placeholder-color: color-mix(in srgb, var(--site-color), var(--duller-base) 50%);
       }
+
+      @media (min-width: 320px) {
+        body {
+          font-size: calc(16px + ((22 - 16) * ((100vw - 320px) / (1920 - 320))));
+        }
+      }
+
+      @media (min-width: 1920px) {
+        body {
+          font-size: 22px;
+        }
+      }
     </style>
   </head>
   <body>
-    <editable-object class="eo" id="eo" disable-edit="true"></editable-object>
+    <editable-object class="eo" id="eo"></editable-object>
     <script src="editable-object.js"></script>
     <script>
       const eo = document.querySelector('#eo');

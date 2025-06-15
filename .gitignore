@@ -1,3 +1,4 @@
 dist
 tmp
 test/fixtures/editable-object.js
+test/fixtures/modern-normalize.css
