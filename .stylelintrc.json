@@ -1,11 +1,4 @@
 {
-  "ignoreFiles": [
-    "node_modules/**",
-    "src/tmp/**",
-    "dist/**",
-    "tmp/**",
-    "test/**"
-  ],
   "extends": [
     "stylelint-config-standard"
   ],
@@ -17,5 +10,5 @@
     "declaration-property-value-no-unknown": null,
     "media-feature-range-notation": "prefix"
   },
-  "defaultSeverity": "warning"
+  "defaultSeverity": "error"
 }
