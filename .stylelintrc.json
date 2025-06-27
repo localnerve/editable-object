@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "plugins": [
+    "stylelint-no-unsupported-browser-features"
+  ],
+  "rules": {
+    "at-rule-no-unknown": null,
+    "declaration-property-value-no-unknown": null,
+    "media-feature-range-notation": "prefix"
+  },
+  "defaultSeverity": "error"
+}
