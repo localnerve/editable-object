@@ -10,6 +10,10 @@ const port = 3010;
 const app = express();
 
 app.use('/', express.static('test/fixtures'));
+app.post('/shutdown', (req, res) => {
+  res.sendStatus(200);
+  process.exit(0);
+});
 
 app.listen(port, err => {
   if (err) console.err(err);

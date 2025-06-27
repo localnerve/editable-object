@@ -183,8 +183,15 @@ li:not(.selected) .toolbar, .editable-object.defocused .toolbar {
 }
 
 .new-object-property {
+  display: flex;
+  flex-flow: row wrap;
+  line-height: 2;
   margin-top: 2rem;
   width: 100%;
+}
+
+label[for="new-property"] {
+  flex: 1 0 100%;
 }
 
 .add-new-object-property-input {
