@@ -576,7 +576,12 @@ class EditableObject extends HTMLElement {
     newPropEl.classList.toggle('error', false);
 
     [...this.shadowRoot.querySelectorAll('li')].forEach(element => {
-      element.querySelector('.property-wrapper > input').classList.toggle('error', false);
+      const inp = element.querySelector('.property-wrapper > input');
+      const hasError = inp.classList.contains('error');
+      if (hasError && inp._value) {
+        inp.value = inp._value;
+      }
+      inp.classList.toggle('error', false);
       element.classList.toggle('selected', false);
       // disable tabindex on all buttons
       [...element.querySelectorAll('button')].forEach(button => {
