@@ -11,6 +11,9 @@
 class EditableObject extends HTMLElement {
   #object = null;
   #disableEdit = false;
+  #onEdit = ()=>true;
+  #onRemove = ()=>true;
+  #onAdd = ()=>true;
   
   // Element references and listeners for cleanup
   // [{ host, type, listener }, ...]
@@ -259,6 +262,8 @@ class EditableObject extends HTMLElement {
     const li = this.#_getLi(e.target);
     const inp = li.querySelector('.property-wrapper > input');
 
+    inp.classList.remove('error');
+
     inp.readOnly = false;
     inp._value = inp.value;
 
@@ -315,14 +320,21 @@ class EditableObject extends HTMLElement {
       this.#editListeners.length = 0;
 
       if (!badInput) {
-        this.#object[key] = jsValue;
+        if (this.#onEdit(key, jsValue)) {
 
-        this.dispatchEvent(this.#_changeEvent({
-          action: 'edit',
-          key,
-          previous: this.#_jsable(previousValue),
-          new: jsValue
-        }));
+          this.#object[key] = jsValue;
+
+          this.dispatchEvent(this.#_changeEvent({
+            action: 'edit',
+            key,
+            previous: this.#_jsable(previousValue),
+            new: jsValue
+          }));
+        } else {
+          inp.classList.add('error');
+        }
+      } else {
+        inp.classList.add('error');
       }
     }
   }
@@ -377,17 +389,24 @@ class EditableObject extends HTMLElement {
   
     const li = this.#_getLi(e.target);
     const key = li.querySelector('.property-wrapper > label').innerText.trim();
-    const value = li.querySelector('.property-wrapper > input').value.trim();
+    const inp = li.querySelector('.property-wrapper > input');
+    const value = inp.value.trim();
     
-    this.#_removeListItem(li);
-    delete this.#object[key];
-    
-    this.dispatchEvent(this.#_changeEvent({
-      action: 'remove',
-      key,
-      previous: this.#_jsable(value),
-      new: null
-    }));
+    const jsValue = this.#_jsable(value);
+
+    if (this.#onRemove(key, jsValue)) {
+      this.#_removeListItem(li);
+      delete this.#object[key];
+
+      this.dispatchEvent(this.#_changeEvent({
+        action: 'remove',
+        key,
+        previous: jsValue,
+        new: null
+      }));
+    } else {
+      inp.classList.add('error');
+    }
   }
   
   /**
@@ -583,9 +602,13 @@ class EditableObject extends HTMLElement {
         const key = rawKey.trim();
         const value = rawValue.trim();
 
-        if (!key || !value || this.#_keyExists(key)) {
+        const error = () => {
           textInput.classList.add('error');
           textInput.focus();
+        }
+
+        if (!key || !value || this.#_keyExists(key)) {
+          error();
           return;
         }
         
@@ -598,20 +621,26 @@ class EditableObject extends HTMLElement {
         }
 
         if (!badInput) {
-          const newProperty = { [key]: value }; // TODO: check if this should be jsValue
-          this.mergeObject(newProperty);
-          
-          // Tell listeners of the mutation event
-          this.dispatchEvent(this.#_changeEvent({
-            action: 'add',
-            key,
-            previous: null,
-            new: jsValue
-          }));
-          
-          const objectProperties = this.shadowRoot.querySelector('.object-properties');
-          objectProperties.lastChild.click();
-          textInput.value = '';
+          if (this.#onAdd(key, jsValue)) {
+            const newProperty = { [key]: value }; // TODO: should be jsValue?
+            this.mergeObject(newProperty);
+            
+            // Tell listeners of the mutation event
+            this.dispatchEvent(this.#_changeEvent({
+              action: 'add',
+              key,
+              previous: null,
+              new: jsValue
+            }));
+            
+            const objectProperties = this.shadowRoot.querySelector('.object-properties');
+            objectProperties.lastChild.click();
+            textInput.value = '';
+          } else {
+            error();
+          }
+        } else {
+          error();
         }
       }
     }
@@ -713,12 +742,78 @@ class EditableObject extends HTMLElement {
   }
 
   /**
-   * Get teh disable-edit attribute.
+   * Get the disable-edit attribute.
    * 
    * @returns {Boolean} The disable-edit value
    */
   get disableEdit () {
     return this.#disableEdit;
+  }
+
+  /**
+   * Set an onEdit handler.
+   * 
+   * @param {Function} value - The new onEdit handler
+   */
+  set onEdit (value) {
+    if (typeof value === 'function') {
+      this.#onEdit = value;
+    } else {
+      this.#onEdit = ()=>true;
+    }
+  }
+
+  /**
+   * Get the onEdit handler.
+   * 
+   * @returns {Function} The onEdit handler
+   */
+  get onEdit () {
+    return this.#onEdit;
+  }
+
+  /**
+   * Set an onAdd handler.
+   * 
+   * @param {Function} value - The new onAdd handler
+   */
+  set onAdd (value) {
+    if (typeof value === 'function') {
+      this.#onAdd = value;
+    } else {
+      this.#onAdd = ()=>true;
+    }
+  }
+
+  /**
+   * Get the onAdd handler.
+   * 
+   * @returns {Function} The onAdd handler
+   */
+  get onAdd () {
+    return this.#onAdd;
+  }
+
+  /**
+   * Set an onRemove handler.
+   * 
+   * @param {Function} value - The new onRemove handler
+   */
+  set onRemove (value) {
+    if (typeof value === 'function') {
+      this.#onRemove = value;
+    } else {
+      this.#onRemove = ()=>true;
+    }
+  }
+
+  /**
+   * Get the onRemove handler.
+   * 
+   * @returns {Function} The onRemove handler
+   */
+  get onRemove () {
+    return this.#onRemove;
   }
 
   /**

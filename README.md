@@ -46,13 +46,19 @@ This web component issues a 'changed' CustomEvent when an object property is add
 
 ## Javascript Public Properties and Methods
 
-* `object` **Property** - Assign a javascript `Object` to set the component's internals for editing. Any existing object is replaced. JSON compatible properties only (string, number, boolean, array, object, null).
+* **Property** `object` {**Object**} - Assign a javascript `Object` to set the component's internals for editing. Any existing object is replaced. JSON compatible properties only (string, number, boolean, array, object, null).
 
-* `addPropertyPlaceholder` **Property** - Assign a prompt to show the user in the new property/value input box to override the default 'Add new property in key:value format'.
+* **Property** `addPropertyPlaceholder` {**String**} - Assign a prompt to show the user in the new property/value input box to override the default 'Add new property in key:value format'.
 
-* `disableEdit` **Property** - Assign to true to make the control read-only and disallow any editing.
+* **Property** `disableEdit` {**Boolean**} - Assign to true to make the control read-only and disallow any editing.
 
-* `mergeObject(newObject)` **method** - Call to merge more properties into the underlying object under edit.
+* **Property** `onEdit` {**Function**} - Assign to a javascript function to be called on edit. Use to supply custom validation to an object property value before edit. Receives the property name and proposed new value from the user. Return true to allow the edit to proceed, or false to invalidate it.
+
+* **Property** `onAdd` {**Function**} - Assign to a javascript function to be called on add. Use to supply custom validation to an object property value before add. Receives the new property name and proposed value from the user. Return true to allow the add to proceed, or false to invalidate it.
+
+* **Property** `onRemove` {**Function**} - Assign to a javascript function to be called on remove. Can be used to supply custom validation to allow a property to be deleted. Receives the property name and value. Return true to allow the delete to proceed, or false to stop it.
+
+* **Method** `mergeObject(newObject)` - Call to merge more properties into the underlying object under edit.
 
 ## Overridable CSS Variables
 
@@ -84,7 +90,11 @@ This web component issues a 'changed' CustomEvent when an object property is add
 ```html 
   <editable-object object="{'property1':'value1','property2':'value2'}" add-property-placeholder="Add property in key:value format"></editable-object>
 ```
-See [The test reference](https://github.com/localnerve/editable-object/blob/master/test/fixtures/index.html) for another usage example, run/play with the test reference with `npm run test:server`.
+See [The test references](https://github.com/localnerve/editable-object/blob/master/test/fixtures) for more usage examples, run them using `npm run test:server`.  
+  * Slot [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/spinner.html)
+  * Fluid type [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/fluid-type.html)
+  * Disable edit [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/disable-edit.html)
+  * Validation handlers [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/handlers.html)
 
 ## Non-browser Exports
 
