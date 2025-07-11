@@ -107,6 +107,7 @@ li, div > div {
   flex-grow: 1;
   align-items: baseline;
   min-width: 10em;
+  touch-action: manipulation; /* disable double-tap zoom for edit handlers */
 }
 
 .property-wrapper label {
