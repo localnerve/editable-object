@@ -16,6 +16,7 @@
   --eo-input-focus-outline-width: 1px;
   --eo-input-focus-outline-style: auto;
   --eo-input-border-color: #bbb;
+  --eo-input-border-radius: 4px;
   --eo-input-bg-color: #444;
   --eo-input-color: #eee;
   --eo-input-font-family: sans-serif;
@@ -68,7 +69,7 @@ li {
 
 input {
   padding: 6px 8px;
-  border-radius: 4px;
+  border-radius: var(--eo-input-border-radius);
   line-height: 1.5;
   border: 1px solid var(--eo-input-border-color);
   color: var(--eo-input-color);

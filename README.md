@@ -79,6 +79,7 @@ This web component issues a 'changed' CustomEvent when an object property is add
 * `--eo-input-focus-outline-width`- The width of the focus ring on the input boxes. Defaults to 1px.
 * `--eo-input-focus-outline-style` - The style of the focus ring on the input boxes. Defaults to 'auto'.
 * `--eo-input-border-color` - The border color of 'add' and 'edit' input boxes. Defaults to #bbb.
+* `--eo-input-border-radius` - The border radius of an input control. Defaults to 4px.
 * `--eo-input-bg-color` - The background color of input controls. Defaults to #444.
 * `--eo-input-color` - The foreground text color of input controls. Defaults to #eee.
 * `--eo-input-font-family` - The font family of input controls. Defaults to 'sans-serif'.
