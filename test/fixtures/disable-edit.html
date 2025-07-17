@@ -33,6 +33,22 @@
         }
       }
 
+      fieldset {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+        margin: 1em;
+      }
+
+      .control {
+        margin: 1em;
+      }
+      .control label {
+        display: inline-block;
+        min-width: 7rem;
+      }
+
       .eo {
         --eo-bg-color: var(--site-bg);
         --eo-border-focused-color: var(--site-color);
@@ -54,11 +70,36 @@
   <body>
     <main>
       <h1>Test editable-object</h1>
+      <fieldset>
+        <legend>Disable Edit</legend>
+        <div>
+          <div class="control">
+            <label for="edit">Enable Edit</label>
+            <input type="radio" name="disable-edit" id="enable" />
+          </div>
+          <div class="control">
+            <label for="add">Disable Edit</label>
+            <input type="radio" name="disable-edit" id="disable" checked />
+          </div>
+        </div>
+      </fieldset>
       <editable-object class="eo" id="eo" disable-edit="true"></editable-object>
     </main>
     <script src="editable-object.js"></script>
     <script>
       const eo = document.querySelector('#eo');
+
+      function handler (name) {
+        const result = document.querySelector(`#${name}`).checked;
+        const disable = document.querySelector('#disable').checked;
+        console.log(`disable=${disable}`, name, result);
+        eo.disableEdit = disable;
+      }
+
+      document.querySelectorAll('input[name="disable-edit"]').forEach(input => {
+        input.addEventListener('click', handler.bind(null, input.id));
+      });
+
       eo.object = {
         property1: "value1",
         property2: "value2",
