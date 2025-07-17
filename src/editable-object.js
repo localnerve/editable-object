@@ -179,10 +179,9 @@ class EditableObject extends HTMLElement {
       downs[i].style.visibility = (i == len - 1 ? 'hidden' : 'visible');
     }
 
-    if (this.#disableEdit) {
-      const deletes = this.shadowRoot.querySelectorAll('.editable-object-remove-property');
-      deletes.forEach(button => button.classList.add('hide'));
-    }
+    const method = this.#disableEdit ? 'add' : 'remove';
+    const deletes = this.shadowRoot.querySelectorAll('.editable-object-remove-property');
+    deletes.forEach(button => button.classList[method]('hide'));
   }
 
   /**
@@ -475,26 +474,32 @@ class EditableObject extends HTMLElement {
   }
 
   /**
-   * Attaches event handlers to the elements of each item inside the li.
+   * Update the listeners for item editing.
+   */
+  #_updateItemEditListeners () {
+    const items = this.shadowRoot.querySelectorAll('.object-properties .property-wrapper');
+    const buttons = {
+      remove: this.shadowRoot.querySelectorAll('.object-properties button[title="Remove"]')
+    };
+
+    this.#_handleItemEditListeners(items, buttons);
+  }
+
+  /**
+   * Attaches event handlers to the elements of each item inside the li, specifically those around `this.#disableEdit`.
    *
    * @param {Array} items - A list of elements inside the item li
    * @param {Array} buttons - A list of buttons inside the item li
    */
-  #_handleItemListeners (items, buttons) {
+  #_handleItemEditListeners (items, buttons) {
     const isTouch = this.#_isTouch();
 
     const doubleTapEditHandler = this.#_createDoubleTapHandler();
     const editHandler = this.#_propertyEditStart.bind(this);
-    const keypressHandler = this.#_propertyInputKeySelect.bind(this);
+    const removeClickHandler = this.#_removeListItemHandler.bind(this);
 
-    items.forEach(element => {
-      element.addEventListener('keypress', keypressHandler, false);
-      this.#objectListeners.push({
-        host: element,
-        type: 'keypress',
-        listener: keypressHandler
-      });
-      if (!this.#disableEdit) {
+    if (!this.#disableEdit) {
+      items.forEach(element => {
         element.addEventListener('dblclick', editHandler, false);
         this.#objectListeners.push({
           host: element,
@@ -509,13 +514,58 @@ class EditableObject extends HTMLElement {
             listener: doubleTapEditHandler
           });
         }
-      }
-    });
+      });
+      buttons.remove.forEach(element => {
+        element.addEventListener('click', removeClickHandler, false);
+        this.#objectListeners.push({
+          host: element,
+          type: 'click',
+          listener: removeClickHandler
+        })
+      });
+    } else {
+      const itemListenerTypes = ['dblclick', 'touchend'];
+      const listenerIndexes = [];
 
+      const listeners = this.#objectListeners.filter((def, i) => {
+        let result = itemListenerTypes.includes(def.type);
+        if (result) {
+          listenerIndexes.push(i);
+        } else if (def.host.title.toLowerCase() === 'remove') {
+          result = true;
+          listenerIndexes.push(i);
+        }
+        return result;
+      });
+      listeners.forEach(def => {
+        def.host.removeEventListener(def.type, def.listener);
+      });
+      let deletions = 0;
+      for (const i of listenerIndexes) {
+        this.#objectListeners.splice(i - deletions++, 1);
+      }
+    }
+  }
+
+  /**
+   * Attaches event handlers to the elements of each item inside the li.
+   *
+   * @param {Array} items - A list of elements inside the item li
+   * @param {Array} buttons - A list of buttons inside the item li
+   */
+  #_handleItemListeners (items, buttons) {
+    const keypressHandler = this.#_propertyInputKeySelect.bind(this);
     const moveUpClickHandler = this.#_moveUpListItemHandler.bind(this);
     const moveDownClickHandler = this.#_moveDownListItemHandler.bind(this);
-    const removeClickHandler = this.#_removeListItemHandler.bind(this);
 
+    items.forEach(element => {
+      element.addEventListener('keypress', keypressHandler, false);
+      this.#objectListeners.push({
+        host: element,
+        type: 'keypress',
+        listener: keypressHandler
+      });
+    });
     buttons.up.forEach(element => {
       element.addEventListener('click',  moveUpClickHandler, false);
       this.#objectListeners.push({
@@ -532,16 +582,8 @@ class EditableObject extends HTMLElement {
         listener: moveDownClickHandler
       });
     });
-    if (!this.#disableEdit) {
-      buttons.remove.forEach(element => {
-        element.addEventListener('click', removeClickHandler, false);
-        this.#objectListeners.push({
-          host: element,
-          type: 'click',
-          listener: removeClickHandler
-        })
-      });
-    }
+
+    this.#_handleItemEditListeners(items, buttons);
   }
 
   /**
@@ -651,6 +693,53 @@ class EditableObject extends HTMLElement {
     }
   }
 
+  /**
+   * Setup handlers and visibility for the add new property input control on `this.#disableEdit`.
+   */
+  #_setupAddNewProperty () {
+    const { shadowRoot } = this;
+    const newPropertyWrapper = shadowRoot.querySelector('.new-object-property');
+    const addElementInput = shadowRoot.querySelector('.add-new-object-property-input');
+    const addElementButton = shadowRoot.querySelector('.editable-object-add-property');
+
+    if (!this.#disableEdit) {
+      const addPropPlaceholder = this.getAttribute('add-property-placeholder');
+      this.addPropertyPlaceholder = addPropPlaceholder;
+
+      const cleanSelection = this.#_cleanSelection.bind(this);
+      newPropertyWrapper.addEventListener('click', cleanSelection, true);
+      this.#listeners.push({ host: newPropertyWrapper, type: 'click', listener: cleanSelection });
+
+      const addPropListener = this.#_addNewProperty.bind(this);
+      addElementInput.addEventListener('keypress', addPropListener, false);
+      this.#listeners.push({ host: addElementInput, type: 'keypress', listener: addPropListener });
+      addElementButton.addEventListener('click', addPropListener, false);
+      this.#listeners.push({ host: addElementButton, type: 'click', listener: addPropListener });
+
+      newPropertyWrapper.classList.remove('hide');
+    } else {
+      const listenerHosts = [newPropertyWrapper, addElementInput, addElementButton];
+
+      const addNewPropListenerIndexes = [];
+      const addNewPropListeners = this.#listeners.filter((def, i) => {
+        const result = listenerHosts.includes(def.host);
+        if (result) {
+          addNewPropListenerIndexes.push(i);
+        }
+        return result;
+      });
+      addNewPropListeners.forEach(def => {
+        def.host.removeEventListener(def.type, def.listener);
+      });
+      let deletions = 0;
+      for (const i of addNewPropListenerIndexes) {
+        this.#listeners.splice(i - deletions++, 1);
+      }
+
+      newPropertyWrapper.classList.add('hide');
+    }
+  }
+
   /// ----------------------------------------------
   /// WebComponent public properties and methods
   /// ----------------------------------------------
@@ -743,7 +832,18 @@ class EditableObject extends HTMLElement {
    * @param {Boolean} value - The new disable-edit value
    */
   set disableEdit (value) {
-    this.#disableEdit = value ? true : false;
+    const attributeName = 'disable-edit';
+    if (value) {
+      this.setAttribute(attributeName, true);
+      this.#disableEdit = true;
+    } else {
+      this.setAttribute(attributeName, false);
+      this.#disableEdit = false;
+    }
+
+    this.#_setupAddNewProperty();
+    this.#_updateItemEditListeners();
+    this.#_updateToolbars();
   }
 
   /**
@@ -752,7 +852,7 @@ class EditableObject extends HTMLElement {
    * @returns {Boolean} The disable-edit value
    */
   get disableEdit () {
-    return this.#disableEdit;
+    return this.#observedAttributeValue('disable-edit');
   }
 
   /**
@@ -840,14 +940,12 @@ class EditableObject extends HTMLElement {
     const objAttr = this.getAttribute('object');
     this.object = JSON.parse(objAttr); // TODO: could throw on bad input, bad input show user error
 
+    // don't use the property here, side effects
     const disableEdit = this.getAttribute('disable-edit');
     this.#disableEdit = disableEdit?.toLowerCase() === 'true' ? true : false;
 
     const container = shadowRoot.querySelector('.editable-object');
     const loading = shadowRoot.querySelector('#loading');
-    const newPropertyWrapper = shadowRoot.querySelector('.new-object-property');
-    const addElementInput = shadowRoot.querySelector('.add-new-object-property-input');
-    const addElementButton = shadowRoot.querySelector('.editable-object-add-property');
 
     const isTouch = this.#_isTouch();
     const docClickListener = this.#_defocusEditableObject.bind(this);
@@ -866,22 +964,7 @@ class EditableObject extends HTMLElement {
     container.addEventListener('click', containerFocusListener, true);
     this.#listeners.push({ host: container, type: 'click', listener: containerFocusListener });
 
-    if (!this.#disableEdit) {
-      const addPropPlaceholder = this.getAttribute('add-property-placeholder');
-      this.addPropertyPlaceholder = addPropPlaceholder;
-
-      const cleanSelection = this.#_cleanSelection.bind(this);
-      newPropertyWrapper.addEventListener('click', cleanSelection, true);
-      this.#listeners.push({ host: newPropertyWrapper, type: 'click', listener: cleanSelection });
-
-      const addPropListener = this.#_addNewProperty.bind(this);
-      addElementInput.addEventListener('keypress', addPropListener, false);
-      this.#listeners.push({ host: addElementInput, type: 'keypress', listener: addPropListener });
-      addElementButton.addEventListener('click', addPropListener, false);
-      this.#listeners.push({ host: addElementButton, type: 'click', listener: addPropListener });
-    } else {
-      newPropertyWrapper.classList.add('hide');
-    }
+    this.#_setupAddNewProperty();
   }
 
   disconnectedCallback () {
