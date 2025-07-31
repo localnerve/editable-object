@@ -144,7 +144,7 @@ class EditableObject extends HTMLElement {
     return `
       <div class="property-wrapper">
         <label for="eo-${key}-value">${key}</label>
-        <input readonly="true" id="eo-${key}-value" type="text" value="${value}" />
+        <input name="${key}" readonly="true" id="eo-${key}-value" type="text" value="${value}" />
       </div>
       <div class="toolbar">
         <button class="editable-object-up-property icon" title="Move up">
