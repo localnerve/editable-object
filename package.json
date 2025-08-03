@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -19,7 +19,7 @@
   "devDependencies": {
     "@axe-core/cli": "^4.10.2",
     "@eslint/js": "^9.32.0",
-    "@localnerve/web-component-build": "^1.12.1",
+    "@localnerve/web-component-build": "^1.12.2",
     "babel-loader": "10.0.0",
     "eslint": "^9.32.0",
     "express": "5.1.0",
