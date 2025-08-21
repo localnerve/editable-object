@@ -499,6 +499,7 @@ class EditableObject extends HTMLElement {
     const removeClickHandler = this.#_removeListItemHandler.bind(this);
 
     if (!this.#disableEdit) {
+      this._editing = false;
       items.forEach(element => {
         element.addEventListener('dblclick', editHandler, false);
         this.#objectListeners.push({

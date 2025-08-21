@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -9,6 +9,7 @@
     "axe": "axe http://localhost:3010",
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
     "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
+    "build:dev": "cd src && node build.js && webpack-cli --config webpack.dev.config.js && cd -",
     "clean": "rimraf src/tmp",
     "lint": "npm run clean && eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
