@@ -1,21 +1,29 @@
 # editable-object
 [![npm version](https://badge.fury.io/js/%40localnerve%2Feditable-object.svg)](http://badge.fury.io/js/%40localnerve%2Feditable-object)
 
-> A small, fast, no-dependency, editable object webcomponent.
+> A small, fast, no-dependency, editable object web component.
 
-## Summary
+## Overview
 
 A native web component for an editable object that allows a user to edit it's values, add or remove key/value pairs. JSON values only.  
 Non-browser module exports build helpers (for building CSP rules, etc).
 
-Can be a convenient 'todo' app to test data update and mutation on the front end with the least additional ceremony.
+_A convenient, **no-dependency** drop-in 'todo' app component to test/round-trip data updates and mutations on the front end._
 
-## Web Details
-  + ~11k full, ~3k gzip
+## Quick Links
+
+* [Events](#events)
+* [Attributes](#attributes-and-properties)
+* [Named Slots](#named-slots)
+* [Properties and Methods](#javascript-public-properties-and-methods)
+* [CSS Variables](#overridable-css-variables)
+* [Usage Examples](#usage-example)
+* [Non-browser exports](#nonbrowser-exports)
 
 ## Events
 
-This web component issues a 'changed' CustomEvent when an object property is added, edited, or removed. The format of the `event.detail` is as follows:
+This web component issues a 'changed' CustomEvent when an object property is added, edited, or removed.  
+The format of the `event.detail` is as follows:
 
 ```
 {
@@ -26,37 +34,49 @@ This web component issues a 'changed' CustomEvent when an object property is add
 }
 ```
 
+_[Event Usage Example](test/fixtures/handlers.html)_
+
 ## Attributes (and Properties)
 
 * `object` - *Optional*. The initial object to edit - Must be a JSON stringified object. Can be added later without JSON stringification via the javascript property `object`.
 
-> Property name is also `object`.
+  > Property name is also `object`.
+  - [object Usage Example](test/fixtures/repeat-assign.html)
 
 * `add-property-placeholder` - *Optional*. The text that prompts a user to add a new property to the object. Defaults to 'Add new property in key:value format'.
 
   > Property name is `addPropertyPlaceholder`.
+  - [addPropertyPlaceholder Usage Example](test/fixtures/add-property-placeholder.html)
 
 * `disable-edit` - *Optional*. Disallow the editing functions. Makes this component a read-only view of the object.
 
   > Property name is `disableEdit`.
+  - [disableEdit Usage Example](test/fixtures/disable-edit.html)
 
 ## Named Slots
 
 * `"loading"` - *Optional*. A named slot you can use to bring in content to display during loading. Hidden after initial object parse or later when object is set.
+  - [Slot Usage Example](test/fixtures/spinner.html)
 
 ## Javascript Public Properties and Methods
 
 * **Property** `object` {**Object**} - Assign a javascript `Object` to set the component's internals for editing. Any existing object is replaced. JSON compatible properties only (string, number, boolean, array, object, null).
+  - [object Usage Example](test/fixtures/repeat-assign.html)
 
 * **Property** `addPropertyPlaceholder` {**String**} - Assign a prompt to show the user in the new property/value input box to override the default 'Add new property in key:value format'.
+  - [addPropertyPlaceholder Usage Example](test/fixtures/add-property-placeholder.html)
 
 * **Property** `disableEdit` {**Boolean**} - Assign to true to make the control read-only and disallow any editing.
+  - [disableEdit Usage Example](test/fixtures/disable-edit.html)
 
 * **Property** `onEdit` {**Function**} - Assign to a javascript function to be called on edit. Use to supply custom validation to an object property value before edit. Receives the property name and proposed new value from the user. Return true to allow the edit to proceed, or false to invalidate it.
+  - [onEdit Usage Example](test/fixtures/handlers.html)
 
 * **Property** `onAdd` {**Function**} - Assign to a javascript function to be called on add. Use to supply custom validation to an object property value before add. Receives the new property name and proposed value from the user. Return true to allow the add to proceed, or false to invalidate it.
+  - [onAdd Usage Example](test/fixtures/handlers.html)
 
 * **Property** `onRemove` {**Function**} - Assign to a javascript function to be called on remove. Can be used to supply custom validation to allow a property to be deleted. Receives the property name and value. Return true to allow the delete to proceed, or false to stop it.
+  - [onRemove Usage Example](test/fixtures/handlers.html)
 
 * **Method** `mergeObject(newObject)` - Call to merge more properties into the underlying object under edit.
 
@@ -106,6 +126,8 @@ The non-browser version of the module exports methods to help with builds.
 Asynchronously gets the raw shadow css text.  
 Useful for computing the hash for a CSP style rule.  
 Returns a Promise that resolves to the full utf8 string of css text.
+
+- [getEditableObjectCssText Usage Example](https://github.com/localnerve/jam-build/blob/main/src/build/html.js#L24)
 
 ## License
 
