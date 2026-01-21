@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -19,18 +19,23 @@
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.0",
-    "@eslint/js": "^9.39.1",
-    "@localnerve/web-component-build": "^1.13.2",
+    "@eslint/js": "^9.39.2",
+    "@localnerve/web-component-build": "^1.15.0",
     "babel-loader": "10.0.0",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "express": "5.2.1",
-    "globals": "^16.5.0",
+    "globals": "^17.0.0",
     "modern-normalize": "^3.0.1",
     "rimraf": "^6.1.2",
-    "stylelint": "^16.26.1",
-    "stylelint-config-standard": "^39.0.1",
+    "stylelint": "^17.0.0",
+    "stylelint-config-standard": "^40.0.0",
     "stylelint-no-unsupported-browser-features": "^8.0.5",
     "webpack-cli": "6.0.1"
+  },
+  "overrides": {
+    "stylelint-no-unsupported-browser-features": {
+      "stylelint": "$stylelint"
+    }
   },
   "files": [
     "dist/**"
