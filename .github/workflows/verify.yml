@@ -30,4 +30,4 @@ jobs:
     - run: npm ci
     # - run: npx browser-driver-manager install chrome
     - name: Run Lint and Test
-      run: npm run lint && npm test:ci
+      run: npm run lint && npm run test:ci
