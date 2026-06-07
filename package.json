@@ -1,12 +1,13 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
   "type": "module",
   "scripts": {
     "axe": "axe http://localhost:3010",
+    "axe:ci": "axe http://localhost:3010 --chrome-path $CHROME_BIN --chrome-options=\"no-sandbox,disable-dev-shm-usage\"",
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
     "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
     "build:dev": "cd src && node build.js && webpack-cli --config webpack.dev.config.js && cd -",
@@ -14,22 +15,23 @@
     "lint": "eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
     "test": "npm run test:server:bg && sleep 2 && npm run axe && curl -X POST http://localhost:3010/shutdown",
+    "test:ci": "npm run test:server:bg && sleep 2 && npm run axe:ci && curl -X POST http://localhost:3010/shutdown",
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js",
     "test:server:bg": "npm run test:server &"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.3",
     "@eslint/js": "^10.0.1",
-    "@localnerve/web-component-build": "^2.1.0",
+    "@localnerve/web-component-build": "^3.0.0",
     "babel-loader": "10.1.1",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.1",
     "express": "5.2.1",
     "globals": "^17.6.0",
     "modern-normalize": "^3.0.1",
-    "stylelint": "^17.11.0",
+    "stylelint": "^17.13.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-no-unsupported-browser-features": "^8.1.1",
-    "webpack-cli": "7.0.2"
+    "webpack-cli": "7.0.3"
   },
   "overrides": {
     "multimatch": "^8.0.0",
