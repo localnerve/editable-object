@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "axe": "axe http://localhost:3010",
+    "axe:ci": "axe http://localhost:3010 --chromedriver-path $CHROME_BIN",
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
     "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
     "build:dev": "cd src && node build.js && webpack-cli --config webpack.dev.config.js && cd -",
@@ -14,7 +15,7 @@
     "lint": "eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
     "test": "npm run test:server:bg && sleep 2 && npm run axe && curl -X POST http://localhost:3010/shutdown",
-    "test:ci": "npm run test:server:bg && sleep 2 && npm run axe --chromedriver-path $CHROME_BIN && curl -X POST http://localhost:3010/shutdown",
+    "test:ci": "npm run test:server:bg && sleep 2 && npm run axe:ci && curl -X POST http://localhost:3010/shutdown",
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js",
     "test:server:bg": "npm run test:server &"
   },
