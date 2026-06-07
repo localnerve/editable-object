@@ -14,6 +14,7 @@
     "lint": "eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
     "test": "npm run test:server:bg && sleep 2 && npm run axe && curl -X POST http://localhost:3010/shutdown",
+    "test:ci": "npm run test:server:bg && sleep 2 && npm run axe --chromedriver-path=$CHROME_BIN && curl -X POST http://localhost:3010/shutdown",
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js",
     "test:server:bg": "npm run test:server &"
   },
