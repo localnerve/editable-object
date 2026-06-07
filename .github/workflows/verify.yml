@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x, 24.12, 26.x] # 24.16 has an issue with chrome blocking axe-cli
+        node-version: [22.x, 24.12, 26.1] # 24.16, 26.3 have an issue with chrome version blocking axe-cli
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
