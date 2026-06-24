@@ -1,4 +1,6 @@
 dist
 tmp
+node_modules
 test/fixtures/editable-object.js
 test/fixtures/modern-normalize.css
+.DS_Store
