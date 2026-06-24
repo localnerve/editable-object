@@ -16,6 +16,6 @@ app.post('/shutdown', (req, res) => {
 });
 
 app.listen(port, err => {
-  if (err) console.err(err);
+  if (err) return console.error(err);
   console.log(`Running on port ${port}`);
 })
