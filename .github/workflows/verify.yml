@@ -27,8 +27,9 @@ jobs:
         install-dependencies: true
         install-chromedriver: true
     - name: Export Chrome Binary Paths
-      run: echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
-      run: echo "CHROMEDRIVER_BIN=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> $GITHUB_ENV
+      run: |
+        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
+        echo "CHROMEDRIVER_BIN=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> $GITHUB_ENV
     - run: npm ci
     # - run: npx browser-driver-manager install chrome
     - name: Run Lint and Test
