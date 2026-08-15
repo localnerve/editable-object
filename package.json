@@ -71,5 +71,9 @@
   "bugs": {
     "url": "https://github.com/localnerve/editable-object/issues"
   },
-  "homepage": "https://github.com/localnerve/editable-object/tree/master/src/editable-object#readme"
+  "homepage": "https://github.com/localnerve/editable-object/tree/master/src/editable-object#readme",
+  "allowScripts": {
+    "chromedriver@152.0.0": true,
+    "fsevents@2.3.2": true
+  }
 }
