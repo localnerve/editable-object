@@ -17,6 +17,17 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Update npm
         run: npm install -g npm@latest # ensure npm 11.5.1 or later
+      - name: Setup Google Chrome v149 # WATCH: match with axe-cli prerequisites
+        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # 2.1.2
+        id: setup-chrome
+        with:
+          chrome-version: '149'
+          install-dependencies: true
+          install-chromedriver: true
+      - name: Export Chrome Binary Paths
+        run: |
+          echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> $GITHUB_ENV
+          echo "CHROMEDRIVER_BIN=${{ steps.setup-chrome.outputs.chromedriver-path }}" >> $GITHUB_ENV
       - run: npm ci
       - run: npx playwright install
       - name: Verify
