@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -28,6 +28,7 @@
     "@playwright/test": "^1.62.1",
     "babel-loader": "10.1.1",
     "eslint": "^10.8.1",
+    "eslint-plugin-playwright": "^2.11.0",
     "express": "5.2.1",
     "globals": "^17.11.0",
     "modern-normalize": "^3.0.1",

@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import playwright from 'eslint-plugin-playwright';
 
 export default [{
   name: 'global',
@@ -10,6 +11,10 @@ export default [{
     'tmp/**',
     'src/tmp/**'
   ]
+}, {
+  name: 'test',
+  files: ['test/playwright/*.js'],
+  ...playwright.configs['flat/recommended']
 }, {
   name: 'src-node',
   files: ['src/build*.js', 'src/index.js', 'webpack.prod.config.js'],
