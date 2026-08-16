@@ -139,7 +139,7 @@ test.describe('Disable Edit Mode', () => {
 
   test('enabling edit shows remove buttons and add section', async ({ page }) => {
     // Click the "Enable Edit" radio button in the fixture
-    await page.click('#enable');
+    await page.locator('#enable').click();
 
     const removeButtons = page.locator('.editable-object-remove-property:not(.hide)');
     await expect(removeButtons).toHaveCount(9);
@@ -193,7 +193,7 @@ test.describe('Change Events', () => {
     await input.press('Enter');
 
     // Wait for event to fire
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(300); // eslint-disable-line playwright/no-wait-for-timeout
 
     const detail = await page.evaluate(() => window.lastChangeDetail);
     expect(detail).not.toBeNull();
@@ -215,7 +215,7 @@ test.describe('Change Events', () => {
     await addInput.press('Enter');
 
     // Wait for event to fire
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(300); // eslint-disable-line playwright/no-wait-for-timeout
 
     const detail = await page.evaluate(() => window.lastChangeDetail);
     expect(detail).not.toBeNull();
@@ -240,7 +240,7 @@ test.describe('Change Events', () => {
     await removeBtn.click();
 
     // Wait for event to fire
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(300); // eslint-disable-line playwright/no-wait-for-timeout
 
     const detail = await page.evaluate(() => window.lastChangeDetail);
     expect(detail).not.toBeNull();
@@ -267,7 +267,7 @@ test.describe('Change Events', () => {
     await input.press('Enter');
 
     // Wait a tick for the event to fire and be captured
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     capturedDetail = await page.evaluate(() => window.capturedChangeDetail);
     expect(capturedDetail).not.toBeNull();
@@ -291,7 +291,7 @@ test.describe('Change Events', () => {
     await addInput.fill('addedKey: addedValue');
     await addInput.press('Enter');
 
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     capturedDetail = await page.evaluate(() => window.capturedChangeDetail);
     expect(capturedDetail).not.toBeNull();
@@ -317,7 +317,7 @@ test.describe('Change Events', () => {
     const removeBtn = liForProperty6.locator('.editable-object-remove-property');
     await removeBtn.click();
 
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     capturedDetail = await page.evaluate(() => window.capturedChangeDetail);
     expect(capturedDetail).not.toBeNull();
@@ -402,7 +402,7 @@ test.describe('Validation Handlers', () => {
     await addInput.fill('allowedProp: allowedValue');
     await addInput.press('Enter');
 
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     // Property should exist in the object
     const hasAllowed = await page.evaluate(() => 'allowedProp' in document.querySelector('#eo').object);
@@ -457,18 +457,18 @@ test.describe('Repeat Object Assignment', () => {
     await expect(input3).toHaveValue('3');
 
     // Click the "Increment Property 3" button
-    await page.click('#update-object');
+    await page.locator('#update-object').click();
 
     await expect(input3).toHaveValue('4');
 
     // Click again
-    await page.click('#update-object');
+    await page.locator('#update-object').click();
     await expect(input3).toHaveValue('5');
   });
 
   test('object property reflects updated value after reassignment', async ({ page }) => {
-    await page.click('#update-object');
-    await page.waitForTimeout(200);
+    await page.locator('#update-object').click();
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     const value = await page.evaluate(() => document.querySelector('#eo').object.property3);
     expect(value).toBe(4);
@@ -492,7 +492,7 @@ test.describe('Loading Slot', () => {
 
   test('loading slot content is hidden after object is assigned', async ({ page }) => {
     // Wait for the 6-second timeout in the fixture, then a bit more
-    await page.waitForTimeout(7000);
+    await page.waitForTimeout(7000); // eslint-disable-line playwright/no-wait-for-timeout
 
     const loadingSlot = page.locator('#loading');
     await expect(loadingSlot).toHaveClass(/hide/);
@@ -500,7 +500,7 @@ test.describe('Loading Slot', () => {
 
   test('properties are rendered after loading completes', async ({ page }) => {
     // Wait for the 6-second timeout in the fixture, then a bit more
-    await page.waitForTimeout(7000);
+    await page.waitForTimeout(7000); // eslint-disable-line playwright/no-wait-for-timeout
 
     const labels = page.locator('.property-wrapper label');
     await expect(labels).toHaveCount(9);
@@ -526,14 +526,12 @@ test.describe('No Data / Empty Object', () => {
     await addInput.fill('firstKey: firstValue');
     await addInput.press('Enter');
 
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(200); // eslint-disable-line playwright/no-wait-for-timeout
 
     // Now there should be one property
     const labels = page.locator('.property-wrapper label');
     await expect(labels).toHaveCount(1);
-
-    const key = await labels.first().textContent();
-    expect(key).toBe('firstKey');
+    await expect(labels.first()).toHaveText('firstKey');
   });
 });
 
@@ -613,8 +611,7 @@ test.describe('Property Selection & Toolbar', () => {
     await moveUpBtn.click();
 
     // After moving, the first and second labels should be swapped
-    const firstLabelAfter = await page.locator('.object-properties li').first().locator('label').textContent();
-    expect(firstLabelAfter).toBe(secondLabelBefore);
+    await expect(page.locator('.object-properties li').first().locator('label')).toHaveText(secondLabelBefore);
   });
 
   test('move down button moves property down in the list', async ({ page }) => {
@@ -630,8 +627,7 @@ test.describe('Property Selection & Toolbar', () => {
     await moveDownBtn.click();
 
     // After moving, labels should be swapped
-    const firstLabelAfter = await page.locator('.object-properties li').first().locator('label').textContent();
-    expect(firstLabelAfter).toBe(secondLabelBefore);
+    await expect(page.locator('.object-properties li').first().locator('label')).toHaveText(secondLabelBefore);
   });
 });
 
