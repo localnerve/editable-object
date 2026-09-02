@@ -13,6 +13,7 @@ import { stageDir, distDir } from './build-settings.js';
 
 export default {
   mode: 'production',
+  target: 'web',
   entry: path.join(stageDir, 'editable-object.js'),
   optimization: {
     minimizer: [new TerserPlugin({ extractComments: false })],

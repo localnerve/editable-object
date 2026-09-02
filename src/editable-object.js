@@ -7,6 +7,13 @@
  * Copyright (c) 2025 Alex Grant (@localnerve), LocalNerve LLC
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
+import { escapeHtml, trustedHtml } from '@localnerve/web-component-build'; // Shaken out in final build, devdep only
+
+// CSP trusted-types policy name for this component's markup. The host page
+// must allowlist it in its CSP, e.g. `trusted-types default editable-object;`
+// (a build step can compute the full allowlist from the sources).
+// Also defined in index.js
+const POLICY_NAME = 'editable-object';
 
 class EditableObject extends HTMLElement {
   #object = null;
@@ -138,13 +145,17 @@ class EditableObject extends HTMLElement {
    *
    * @param {String} key - The property key
    * @param {String} value - The property value
-   * @returns {String} The property's HTML code
+   * @returns {String} The property's HTML code, with key and value escaped for safe interpolation
    */
   #_propertyHTML (key, value) {
+    // user-influenced data is escaped before composition into markup
+    const safeKey = escapeHtml(key);
+    const safeValue = escapeHtml(value);
+
     return `
       <div class="property-wrapper">
-        <label for="eo-${key}-value">${key}</label>
-        <input name="${key}" readonly="true" id="eo-${key}-value" type="text" value="${value}" />
+        <label for="eo-${safeKey}-value">${safeKey}</label>
+        <input name="${safeKey}" readonly="true" id="eo-${safeKey}-value" type="text" value="${safeValue}" />
       </div>
       <div class="toolbar">
         <button class="editable-object-up-property icon" title="Move up">
@@ -772,7 +783,7 @@ class EditableObject extends HTMLElement {
     
     const loading = this.shadowRoot.querySelector('#loading');
     const propContainer = this.shadowRoot.querySelector('.object-properties');
-    propContainer.innerHTML = '';
+    propContainer.innerHTML = trustedHtml(POLICY_NAME, '');
 
     const lis = [];
     const items = [];
@@ -784,7 +795,8 @@ class EditableObject extends HTMLElement {
 
     for (const [key, value] of Object.entries(obj)) {
       const li = document.createElement('li');
-      li.innerHTML = this.#_propertyHTML(key, this.#_stringable(value));
+      // values are escaped in #_propertyHTML; the named policy passes them through
+      li.innerHTML = trustedHtml(POLICY_NAME, this.#_propertyHTML(key, this.#_stringable(value)));
       propContainer.appendChild(li);
       lis.push(li);
       items.push(li.querySelector('.property-wrapper'));
@@ -935,8 +947,8 @@ class EditableObject extends HTMLElement {
 
   connectedCallback () {
     const { shadowRoot } = this;
-    
-    shadowRoot.innerHTML = '__JS_REPLACEMENT__';
+
+    shadowRoot.innerHTML = trustedHtml(POLICY_NAME, '__JS_REPLACEMENT__');
 
     const objAttr = this.getAttribute('object');
     this.object = JSON.parse(objAttr); // TODO: could throw on bad input, bad input show user error

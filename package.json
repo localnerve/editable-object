@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.4.1",
+  "version": "0.5.0-rc.1",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -10,7 +10,9 @@
     "axe:ci": "axe http://localhost:3010 --chrome-path $CHROME_BIN --chromedriver-path $CHROMEDRIVER_BIN --verbose --chrome-options=\"no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage,headless\"",
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
     "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
+    "postbuild": "node -e \"require('fs').cpSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
     "build:dev": "cd src && node build.js && webpack-cli --config webpack.dev.config.js && cd -",
+    "postbuild:dev": "node -e \"require('fs').cpSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
     "prelint": "node -e 'require(\"fs\").rmSync(\"src/tmp\",{recursive:true,force:true})'",
     "lint": "eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
@@ -19,24 +21,25 @@
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "test:server": "SKIP_MIN=1 npm run build && node test/dev-server.js",
+    "test:server:dev": "SKIP_MIN=1 npm run build:dev && node test/dev-server.js",
     "test:server:bg": "npm run test:server &"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.13.0",
     "@eslint/js": "^10.0.1",
-    "@localnerve/web-component-build": "^3.2.0",
+    "@localnerve/web-component-build": "^3.4.0-rc.3",
     "@playwright/test": "^1.62.1",
     "babel-loader": "10.1.1",
-    "eslint": "^10.8.1",
+    "eslint": "^10.9.1",
     "eslint-plugin-playwright": "^2.11.0",
     "express": "5.2.1",
-    "globals": "^17.11.0",
+    "globals": "^17.12.0",
     "modern-normalize": "^3.0.1",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-no-unsupported-browser-features": "^8.1.1",
     "terser-webpack-plugin": "^5.6.1",
-    "webpack-cli": "7.2.2"
+    "webpack-cli": "7.2.3"
   },
   "overrides": {
     "multimatch": "^8.0.0",
