@@ -6,6 +6,7 @@
 ## Overview
 
 A native web component for an editable object that allows a user to edit it's values, add or remove key/value pairs. JSON values only.  
+The component is [Trusted Types](#trusted-types) aware so it works under a strict CSP (`require-trusted-types-for 'script'`).  
 Non-browser module exports build helpers (for building CSP rules, etc).
 
 _A convenient, **no-dependency** drop-in 'todo' app component to test/round-trip data updates and mutations on the front end._
@@ -18,6 +19,7 @@ _A convenient, **no-dependency** drop-in 'todo' app component to test/round-trip
 * [Properties and Methods](#javascript-public-properties-and-methods)
 * [CSS Variables](#overridable-css-variables)
 * [Usage Examples](#usage-example)
+* [Trusted Types](#trusted-types)
 * [Non-browser exports](#nonbrowser-exports)
 
 ## Events
@@ -117,9 +119,36 @@ See [The test references](https://github.com/localnerve/editable-object/blob/mas
   * Disable edit [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/disable-edit.html)
   * Validation handlers [example](https://github.com/localnerve/editable-object/blob/master/test/fixtures/handlers.html)
 
+## Trusted Types
+
+This component is written to work both **with** and **without** Trusted Types enforcement. When a page's CSP includes `require-trusted-types-for 'script'`, every DOM injection sink (`innerHTML`, etc.) must receive a value produced by an allowlisted policy — plain strings are rejected.
+
+The component handles this on its own:
+
+* Its static shadow-DOM template and the per-property markup it renders are handed to sinks through its **own named policy** (`editable-object`).
+* Any user-influenced values (property keys, values) are escaped with `escapeHtml()` before being composed into that markup.
+* In browsers without Trusted Types — or when the page does not enforce a CSP — every helper degrades to a plain-string passthrough, so the component works unchanged in dev and older browsers.
+
+The required helpers (`escapeHtml`, `trustedHtml`) are gathered from [`@localnerve/web-component-build`](https://github.com/localnerve/web-component-build#readme) **at build time** and inlined into the shipped bundle. That is why this package has **no runtime dependency** on web-component-build — it is a build-time (dev) dependency only.
+
+### CSP requirement
+
+Your site's CSP `trusted-types` directive must allowlist the component's policy name:
+
+```
+Content-Security-Policy: ... require-trusted-types-for 'script'; trusted-types default editable-object;
+```
+
+The policy name is exported as `POLICY_NAME` (see [Non-browser Exports](#nonbrowser-exports)) so build tooling can reference it. A build step can also compute the full allowlist automatically from your sources — see [`@localnerve/trusted-types-rules`](https://github.com/localnerve/trusted-types-rules#readme).
+
 ## Non-browser Exports
 
 The non-browser version of the module exports methods to help with builds.
+
+### POLICY_NAME {String}
+
+The Trusted Types policy name this component registers: `'editable-object'`.  
+List it in your CSP `trusted-types` directive when enforcing `require-trusted-types-for 'script'` (see [Trusted Types](#trusted-types)).
 
 ### {Promise} getEditableObjectCssText()
 
