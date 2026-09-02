@@ -10,6 +10,9 @@ import * as url from 'node:url';
 
 const thisDir = url.fileURLToPath(new URL('.', import.meta.url));
 
+// Also defined in editable-object.js
+export const POLICY_NAME = 'editable-object';
+
 /**
  * Get the css file contents.
  * Useful for CSP builds.

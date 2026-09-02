@@ -1,7 +1,7 @@
 name: Deploy
 on:
   push:
-    branches: [ main ]
+    branches: [ main, rc-stage ]
 
 jobs:
   deploy:
@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Update npm
-        run: npm install -g npm@latest # ensure npm 11.5.1 or later
+      #- name: Update npm
+      #  run: npm install -g npm@latest # ensure npm 11.5.1 or later
       - name: Setup Google Chrome v149 # WATCH: match with axe-cli prerequisites
         uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd # 2.1.2
         id: setup-chrome
@@ -36,4 +36,9 @@ jobs:
           npm run test:ci
           npm run test:playwright
       - name: Publish
-        run: npm publish --access public
+        run: |
+          if [ "${{ github.ref_name }}" = "rc-stage" ]; then
+            npm publish --access public --tag rc
+          else
+            npm publish --access public
+          fi
