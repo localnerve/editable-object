@@ -12,6 +12,7 @@ import { stageDir, distDir } from './build-settings.js';
 
 export default {
   mode: 'development',
+  target: 'web',
   entry: path.join(stageDir, 'editable-object.js'),
   optimization: {
     nodeEnv: 'development',

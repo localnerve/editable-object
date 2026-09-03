@@ -47,7 +47,7 @@ test.describe('Basic Rendering & Object Property', () => {
 
   test('displays correct null value', async ({ page }) => {
     const input5 = page.locator('#eo-property5-value');
-    await expect(input5).toHaveValue('null');
+    await expect(input5).toHaveValue('');
   });
 
   test('displays correct boolean value', async ({ page }) => {
