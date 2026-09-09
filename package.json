@@ -1,6 +1,6 @@
 {
   "name": "@localnerve/editable-object",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A vanillajs editable-object web component for visual object display and editing",
   "main": "dist/index.js",
   "browser": "dist/editable-object.js",
@@ -10,9 +10,9 @@
     "axe:ci": "axe http://localhost:3010 --chrome-path $CHROME_BIN --chromedriver-path $CHROMEDRIVER_BIN --verbose --chrome-options=\"no-sandbox,disable-setuid-sandbox,disable-dev-shm-usage,headless\"",
     "build:debug": "pushd src && node --inspect-brk build.js && popd",
     "build": "cd src && node build.js && webpack-cli --config webpack.prod.config.js && cd -",
-    "postbuild": "node -e \"require('fs').cpSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
+    "postbuild": "node -e \"require('fs').copyFileSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
     "build:dev": "cd src && node build.js && webpack-cli --config webpack.dev.config.js && cd -",
-    "postbuild:dev": "node -e \"require('fs').cpSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
+    "postbuild:dev": "node -e \"require('fs').copyFileSync('dist/editable-object.js', 'test/fixtures/editable-object.js');\"",
     "prelint": "node -e 'require(\"fs\").rmSync(\"src/tmp\",{recursive:true,force:true})'",
     "lint": "eslint . && stylelint -f verbose src/**/*.css",
     "prepublishOnly": "npm run build",
@@ -27,24 +27,23 @@
   "devDependencies": {
     "@axe-core/cli": "^4.13.0",
     "@eslint/js": "^10.0.1",
-    "@localnerve/web-component-build": "^3.4.1",
-    "@playwright/test": "^1.62.1",
+    "@localnerve/web-component-build": "^3.5.0",
+    "@playwright/test": "^1.63.0",
     "babel-loader": "10.1.1",
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "eslint-plugin-playwright": "^2.11.0",
     "express": "5.2.1",
     "globals": "^17.12.0",
     "modern-normalize": "^3.0.1",
-    "stylelint": "^17.14.1",
+    "stylelint": "^17.15.0",
     "stylelint-config-standard": "^40.0.0",
-    "stylelint-no-unsupported-browser-features": "^8.1.1",
+    "stylelint-no-unsupported-browser-features": "^8.1.2",
     "terser-webpack-plugin": "^5.6.1",
     "webpack-cli": "7.2.3"
   },
   "overrides": {
     "multimatch": "^8.0.0",
-    "minimatch": "^10.2.6",
-    "adm-zip": "^0.6.0"
+    "minimatch": "^10.2.6"
   },
   "files": [
     "dist/**"
@@ -77,7 +76,7 @@
   },
   "homepage": "https://github.com/localnerve/editable-object/tree/master/src/editable-object#readme",
   "allowScripts": {
-    "chromedriver@152.0.0": true,
-    "fsevents@2.3.2": true
+    "chromedriver": true,
+    "fsevents": true
   }
 }
