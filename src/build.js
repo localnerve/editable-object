@@ -25,9 +25,12 @@ async function buildwc () {
   
   const result = await build(stageDir, {
     cssPath: cssFilePath,
-    htmlPath: htmlFilePath,
     jsPath: jsFilePath,
-    jsReplacement,
+    templates: [{
+      name: 'editable-object',
+      htmlPath: htmlFilePath,
+      token: jsReplacement
+    }],
     minifySkip: !!process.env.SKIP_MIN
   });
 
